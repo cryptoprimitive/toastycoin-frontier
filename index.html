@@ -9,6 +9,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="script/loadNavbar.js"></script>
+  <script src="script/index.js"></script>
 </head>
 
 <body>
@@ -22,7 +23,7 @@
     
     <h1>Toastycoin</h1>
     <p>Toastycoin is a tool that makes it easy to find and interact with BOPs, or create your own. <b>Follow the links at the top of the page to try it out!</b> You can use Toastycoin on the mainnet or on the Ropsten testnet by setting your provider (Metamask/Mist/Parity) to the appropriate network.
-    <p>Toastycoin is also non-proprietary; see the source code <a href="#">here <font style="color:red">NEEDS LINK</font></a>.
+    <p>Toastycoin is also non-proprietary; see the source code <a href="https://github.com/coinop-logan/coinop-logan.github.io">here</a>.
     
     <h1>A Simple Example</h1>
     <p>Let's imagine the payer needs a transcript written for an audio recording. He is willing to pay 0.5 ETH for the service, and sets a <i>service deposit</i> of 0.1 ETH.</p>
@@ -36,7 +37,7 @@
     <p>If one of these users is confident they can do the work, they can pay the service deposit to become the BOP's worker. The BOP will now show a "Committed" state with the worker locked in. Additionally, the worker will see a "Worker Statement" form to begin communicating with the payer.</p>
     <center><img class="img-responsive" src="https://i.imgur.com/JQBQMRD.png"></center>
     <p>The BOP is now in the "Committed" state. In this state, the worker is locked into the contract, and the payer can no longer recover the payment. Note that committed BOPs hold not only the payer's original payment, but also the worker's service deposit&mdash;in our example, 0.6 ETH in total.</p>
-    <p>The fate of this 0.6 ETH is decided by the payer. Although he cannot directly recover it, he can still choose whether to release the payment to the worker or burn it (as in <a href="#">destroy</a><font style="color:red">NEEDS LINK</font>). He can burn or release in parts or all-at-once.</p>
+    <p>The fate of this 0.6 ETH is decided by the payer. Although he cannot directly recover it, he can still choose whether to release the payment to the worker or burn it (as in <a href="" style="cursor:pointer" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-content="When ether is <i>burned</i>, this means it's sent to the address 0x0. Since no one can access any funds from this address, the ether is effectively destroyed&mdash;removed permanently from circulation.">destroy</a>). He can burn or release in parts or all-at-once.</p>
     <center><img class="img-responsive" src="https://i.imgur.com/0BlMWtp.png"></center>
     <p>While in the Committed state, the worker and payer begin communication using the Worker and Payer Statements respectively. Because these statements are stored on the Ethereum blockchain, they are trustless, signed, permanent and unhackable. They are also a little expensive and public, so payers and workers may negotiate a private place to chat instead. In either case, the event log below the BOP information will show their public actions:<p>
     <center><img class="img-responsive" src="https://i.imgur.com/28Fsf9H.png"></center>
