@@ -115,6 +115,7 @@ window.addEventListener('load', function() {
     web3.version.getNetwork((err, netID) => {
       if (netID === '1') {
         console.log("You are on the Ethereum mainnet!");
+        window.filterStartBlock = FILTER_START_BLOCK;
         window.etherscanURL = "https://etherscan.io/"
         window.etherscanAPIURL = "https://api.etherscan.io/api?";
         BOPFactory.address = BOP_FACTORY_ADDRESS;
@@ -122,6 +123,7 @@ window.addEventListener('load', function() {
       }
       else if (netID === '3') {
         console.log("You are on the Ropsten net!");
+        window.filterStartBlock = FILTER_START_BLOCK_ROPSTEN;
         window.etherscanURL = "https://ropsten.etherscan.io/";
         window.etherscanAPIURL = "https://ropsten.etherscan.io/api?";
         BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
