@@ -12,8 +12,8 @@
   <script src="script/index.js"></script>
 </head>
 
-<body>
 
+<body>
 <div id="nav-placeholder"></div>
 <div class="container">
   <div class="well" style="font-size:1.8rem">
@@ -22,47 +22,9 @@
     <p>BOPs are non-proprietary; see the Factory contract and source code <a href="https://etherscan.io/address/0x38b394cd27c3b0d865f58a4512b65c7b0ab6db66#code">here</a>.</p>
     
     <h1>Toastycoin</h1>
-    <p>Toastycoin is a tool that makes it easy to find and interact with BOPs, or create your own. <b>Follow the links at the top of the page to try it out!</b> You can use Toastycoin on the mainnet or on the Ropsten testnet by setting your provider (Metamask/Mist/Parity) to the appropriate network.
+    <p>Toastycoin is a tool that makes it easy to find and interact with BOPs, or create your own.</p>
+    <p style='font-size:1.3em'>Follow the "Browse BOPs" or "Create BOP" links at the left of the top navbar, or check out the informational links on the right of the navbar. You can use Toastycoin on the mainnet or on the Ropsten testnet by setting your provider (Metamask/Mist/Parity) to the appropriate network.
     <p>Toastycoin is also non-proprietary; see the source code <a href="https://github.com/coinop-logan/coinop-logan.github.io">here</a>.
-    
-    <h1>A Simple Example</h1>
-    <p>Let's imagine the payer needs a transcript written for an audio recording. He is willing to pay 0.5 ETH for the service, and sets a <i>service deposit</i> of 0.1 ETH.</p>
-    <center><img width='600px' src="https://i.imgur.com/npJIkn1.png"></center>
-    <p>After clicking "Create BOP", it will be created within the next few Ethereum blocks, and will be publicly viewable via the interact page:</p>
-    <center><img class="img-responsive" src="https://i.imgur.com/YDtQSI5.png"></center>
-    <p>The above image shows the payer's view of the BOP&mdash;other users don't see the "recover" button or the payer statement form at the bottom.</p>
-    <p>Until and unless a worker is found, the BOP is the "Open" state. In this state, the payer can cancel the payment and recover the entire payment. He can also add more funds or log additional Payer Statements if he likes.</p>
-    <p>Meanwhile, other users are browsing through Open BOPs, looking for jobs they can do, with service deposits they can afford.</p>
-    <center><img class="img-responsive" src="https://i.imgur.com/9lRpeTu.png"></center>
-    <p>If one of these users is confident they can do the work, they can pay the service deposit to become the BOP's worker. The BOP will now show a "Committed" state with the worker locked in. Additionally, the worker will see a "Worker Statement" form to begin communicating with the payer.</p>
-    <center><img class="img-responsive" src="https://i.imgur.com/JQBQMRD.png"></center>
-    <p>The BOP is now in the "Committed" state. In this state, the worker is locked into the contract, and the payer can no longer recover the payment. Note that committed BOPs hold not only the payer's original payment, but also the worker's service deposit&mdash;in our example, 0.6 ETH in total.</p>
-    <p>The fate of this 0.6 ETH is decided by the payer. Although he cannot directly recover it, he can still choose whether to release the payment to the worker or burn it (as in <a href="" style="cursor:pointer" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-content="When ether is <i>burned</i>, this means it's sent to the address 0x0. Since no one can access any funds from this address, the ether is effectively destroyed&mdash;removed permanently from circulation.">destroy</a>). He can burn or release in parts or all-at-once.</p>
-    <center><img class="img-responsive" src="https://i.imgur.com/0BlMWtp.png"></center>
-    <p>While in the Committed state, the worker and payer begin communication using the Worker and Payer Statements respectively. Because these statements are stored on the Ethereum blockchain, they are trustless, signed, permanent and unhackable. They are also a little expensive and public, so payers and workers may negotiate a private place to chat instead. In either case, the event log below the BOP information will show their public actions:<p>
-    <center><img class="img-responsive" src="https://i.imgur.com/28Fsf9H.png"></center>
-    <p>If the worker provides the transcription, the payer can release the payment. If not, the payer can burn it. Once the entire payment has been either burned or released, the BOP moves to its final state, "Closed".</p>
-    <center><img class="img-responsive" src="https://i.imgur.com/s57yVSi.png"></center>
-    <hr>
-    <p>BOPs utilize game theory to strongly guarantee the following, assuming <a href="creatingbops.html">an appropriate service deposit is set</a>:</p>
-    <ul>
-      <li>Payers unwilling to pay for the job will never open a BOP in the first place; therefore, each Open BOP represents a legitimate opportunity for some capable worker to earn the payment.</li>
-      <li>A payer will only release the payment if the worker completes the job; otherwise, the payer will burn it.</li>
-      <li>Only capable, confident workers will risk investing the service deposit to commit to a BOP. The higher the service deposit, the more confident the worker must be.</li>
-    </ul>
-    <p>If you're interested in the details, see our <a href="gametheory.html">more rigorous exploration of the game theory involved</a>.</p>
-    <p>Otherwise, feel free to check out the <a href="browse.html">list of BOPs</a> or <a href="create.html">open up your own BOP</a>!</p>
-    <hr>
-    <p>Finally, let me point out that because BOPs are nothing more than a specific kind of smart contract, anyone else can create other kinds of interfaces or tools for BOPs. As long as these other tools follow the same <a href="https://etherscan.io/address/0x38b394cd27c3b0d865f58a4512b65c7b0ab6db66">BOP Factory contract</a>, the pool of BOPs will be shared as well: a BOP created by any one interface would be reflected on all of them.</p>
-    <p>For example, one could create:</p>
-    <ul>
-      <li>A server that monitors BOPs and emails users when a BOP's state changes (the server could charge X ETH per Y notifications)</li>
-      <li>A more advanced search/browse utility, with order-by or filter options</li>
-      <li>A bot that responds to BOPs of a given format, to provide some automatic service</li>
-      <li>A specialized interface that creates BOPs for some specific use-case</li>
-      <li>A tool that analyzes and aggregates data for specific Ethereum addresses, facilitating reputation research: how much has a given user released vs burned? How many BOPs have they used?</li>
-    </ul>
-    
   </div>
 </div>
   
