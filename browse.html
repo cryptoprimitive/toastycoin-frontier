@@ -4,7 +4,7 @@
   <title>TC | Browse</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <!--<link rel="stylesheet" href="border.css">-->
+  <!--<link rel="stylesheet" href="css/border.css">-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdn.rawgit.com/yahoo/xss-filters/master/dist/xss-filters.min.js"></script>
@@ -29,7 +29,16 @@
     </div>
   </div>
   <div id="web3Div" hidden='true'>
-    <div id="browseVue">
+    <div id="browseVue" align="left">
+      <p>This code determines how the Payments below are compared and sorted. Javascript's <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">.sort()</a> is used.</p>
+      <div class="row">
+        <div class="col-sm-10">
+          <pre class="pre-scrollable" style='max-height:100px'>{{compareCode}}</pre>
+        </div>
+        <div class="col-sm-2 align-bottom">
+          <button class="btn btn-info" data-toggle="modal" data-target="#compare-code-modal">Change compare code</button>
+        </div>
+      </div>
       <table class="table table-condensed table-bordered table-hover">
         <thead>
           <tr>
@@ -71,6 +80,20 @@
           </tr>
         </tbody>
       </table>
+      <div id="compare-code-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4>Set new compare code</h4>
+            </div>
+            <div class="modal-body">
+              <textarea id="compare-code-input" class="form-control" style="font-family:monospace" rows=20 style="mid-width:100%"></textarea><br>
+              <button class="btn btn-success" data-dismiss="modal" onclick="applyNewCompareCode()">Apply code</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

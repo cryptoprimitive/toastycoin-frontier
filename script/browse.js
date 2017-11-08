@@ -13,7 +13,12 @@ function processAndAddBOP(address, state) {
     autoreleaseInterval: new web3.BigNumber(state[9]),
     autoreleaseTime: new web3.BigNumber(state[10])
   };
-  browseVue.BOPs.push(BOP);
+  browseVue.pushBOPAndSort(BOP);
+}
+
+function applyNewCompareCode() {
+  browseVue.compareCode = $("#compare-code-input").val();
+  browseVue.sortBOPs();
 }
 
 //Here we use an array in the factory to track BOPs. We could filter for newBOP events instead
@@ -72,11 +77,39 @@ function createBrowseVue() {
     el: "#browseVue",
     data: {
       BOPs: [],
-      intervalHandle: null
+      intervalHandle: null,
+      compareCode:
+`compareResult = b.balance - a.balance //Sort by balance, descending
+
+//a and b represent two Payments to compare, and have the following members:
+//  address (string)
+//  payer (string)
+//  title (string)
+//  state (0, 1, or 2)
+//  worker (string)
+//  balance (BigNumber, wei)
+//  serviceDeposit (BigNumber, wei)
+//  amountDeposited (BigNumber, wei)
+//  amountBurned (BigNumber, wei)
+//  amountReleased (BigNumber, wei)
+//  autoreleaseInterval (BigNumber, seconds)
+//  autoreleaseTime (BigNumber, unix time)
+`,
     },
     methods: {
       goToInteractPage: function(address) {
         window.location.href = "interact.html?address=" + address
+      },
+      pushBOPAndSort: function(BOP) {
+        this.BOPs.push(BOP);
+        this.sortBOPs();
+      },
+      sortBOPs: function() {
+        this.BOPs.sort(function(a, b) {
+          var compareResult;
+          eval(browseVue.compareCode);
+          return compareResult;
+        });
       }
     },
     updated: function() {
@@ -103,6 +136,10 @@ window.addEventListener('load', function() {
   });
   
   window.browseVue = createBrowseVue();
+  
+  $("#compare-code-modal").on('shown.bs.modal', function (e) {
+    $("#compare-code-input").val(browseVue.compareCode);
+  });
   
   if (typeof web3 === 'undefined') {
     $('#noProviderWarningDiv').show();
