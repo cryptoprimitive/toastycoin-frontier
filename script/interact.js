@@ -70,9 +70,9 @@ function createBOPVue() {
         this.now = Math.floor(Date.now()/1000);
         
         //check is web3 user is payer or worker
-        if (web3.eth.accounts[0] == this.BOP.payer)
+        if (web3.eth.defaultAccount == this.BOP.payer)
           this.userIsPayer = true;
-        if (web3.eth.accounts[0] == this.BOP.worker)
+        if (web3.eth.defaultAccount == this.BOP.worker)
           this.userIsWorker = true;
 
         $('[data-toggle="popover"]').popover();
@@ -140,10 +140,6 @@ function createEventLogVue() {
 };
 
 function onWeb3Ready() {
-  BOPFactory.ABI = BOP_FACTORY_ABI;
-  BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
-  BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
-  
   var address = getUrlParameter("address");
   
   newBOPAddress(address);
@@ -173,36 +169,7 @@ window.addEventListener('load', function() {
     }
   });
   
-  if (typeof web3 === 'undefined') {
-    $('#noProviderWarningDiv').show();
-  }
-  else {//A web3 provider is present; we can continue
-    $('#web3Div').show();
-    web3.eth.defaultAccount = web3.eth.accounts[0];
-    
-    window.BOPFactory = {};
-    web3.version.getNetwork((err, netID) => {
-      if (netID === '1') {
-        console.log("You are on the Ethereum mainnet!");
-        window.filterStartBlock = FILTER_START_BLOCK;
-        window.etherscanURL = "https://etherscan.io/"
-        window.etherscanAPIURL = "https://api.etherscan.io/api?";
-        BOPFactory.address = BOP_FACTORY_ADDRESS;
-        onWeb3Ready();
-      }
-      else if (netID === '3') {
-        console.log("You are on the Ropsten net!");
-        window.filterStartBlock = FILTER_START_BLOCK_ROPSTEN;
-        window.etherscanURL = "https://ropsten.etherscan.io/";
-        window.etherscanAPIURL = "https://ropsten.etherscan.io/api?";
-        BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
-        onWeb3Ready();
-      }
-      else{
-        alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main or Ropsten network, then refresh the page.");
-      }
-    });
-  }
+  prepareWeb3();
 });
 
 //BOP contract method calls

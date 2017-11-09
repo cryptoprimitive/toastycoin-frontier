@@ -141,34 +141,5 @@ window.addEventListener('load', function() {
     $("#compare-code-input").val(browseVue.compareCode);
   });
   
-  if (typeof web3 === 'undefined') {
-    $('#noProviderWarningDiv').show();
-  }
-  else {//A web3 provider is present; we can continue
-    $('#web3Div').show();
-    
-    //window.web3 = new Web3(web3.currentProvider);
-    window.BOPFactory = {};
-    web3.version.getNetwork((err, netID) => {
-      if (netID === '1') {
-        console.log("You are on the Ethereum mainnet!");
-        window.filterStartBlock = FILTER_START_BLOCK;
-        window.etherscanURL = "https://etherscan.io/"
-        window.etherscanAPIURL = "https://api.etherscan.io/api?";
-        BOPFactory.address = BOP_FACTORY_ADDRESS;
-        onWeb3Ready();
-      }
-      else if (netID === '3') {
-        console.log("You are on the Ropsten net!");
-        window.filterStartBlock = FILTER_START_BLOCK_ROPSTEN;
-        window.etherscanURL = "https://ropsten.etherscan.io/";
-        window.etherscanAPIURL = "https://ropsten.etherscan.io/api?";
-        BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
-        onWeb3Ready();
-      }
-      else{
-        alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main or Ropsten network, then refresh the page.");
-      }
-    });
-  }
+  prepareWeb3();
 });

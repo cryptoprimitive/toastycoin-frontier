@@ -1,3 +1,5 @@
+function onWeb3Ready() {}
+
 function handleNewBOPResult(err, res) {
   if (err) alert(err.message);
   else {
@@ -10,7 +12,7 @@ function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalI
     var serviceDepositInWei = web3.toWei(serviceDepositInEth, 'ether');
     var autoreleaseIntervalInSeconds = autoreleaseIntervalInDays*24*60*60;
 
-    BOPFactory.contractInstance.newBurnableOpenPayment(payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, {'from':web3.eth.accounts[0],'value': valueInWei, 'gas': 1500000}, handleNewBOPResult);
+    BOPFactory.contractInstance.newBurnableOpenPayment(payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, {'value': valueInWei, 'gas': 1500000}, handleNewBOPResult);
 }
 
 function newBOPFromForm() {
@@ -60,7 +62,7 @@ function newBOPFromForm() {
 
 function populatePayerInputFromMetamask() {
   if ($("#payerInput").val() == "") {
-    $("#payerInput").val(web3.eth.accounts[0])
+    $("#payerInput").val(web3.eth.defaultAccount)
   }
 }
 
@@ -131,33 +133,5 @@ window.addEventListener('load', function() {
   
   $('[data-toggle="popover"]').popover();
   
-  if (typeof web3 === 'undefined') {
-    $('#noProviderWarningDiv').show();
-  }
-  else {//A web3 provider is present; we can continue
-    $('#web3Div').show();
-    
-    window.web3 = new Web3(web3.currentProvider);
-    window.BOPFactory = {};
-    web3.version.getNetwork((err, netID) => {
-      if (netID === '1') {
-        console.log("You are on the Ethereum mainnet!");
-        window.filterStartBlock = FILTER_START_BLOCK;
-        window.etherscanURL = "https://etherscan.io/"
-        BOPFactory.address = BOP_FACTORY_ADDRESS;
-      }
-      else if (netID === '3') {
-        console.log("You are on the Ropsten net!");
-        window.filterStartBlock = FILTER_START_BLOCK_ROPSTEN;
-        window.etherscanURL = "https://ropsten.etherscan.io/";
-        BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
-      }
-      else{
-        alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main network, then refresh.");
-      }
-      BOPFactory.ABI = BOP_FACTORY_ABI;
-      BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
-      BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
-    });
-  }
+  prepareWeb3();
 });
