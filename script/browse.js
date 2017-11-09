@@ -79,7 +79,8 @@ function createBrowseVue() {
       BOPs: [],
       intervalHandle: null,
       compareCode:
-`compareResult = b.balance - a.balance //Sort by balance, descending
+`// Sort by balance, descending
+compareResult = b.balance - a.balance
 
 //a and b represent two Payments to compare, and have the following members:
 //  address (string)

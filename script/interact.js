@@ -182,20 +182,34 @@ function callCommit() {
   BOPVue.BOP.contractInstance.commit({'value':BOPVue.BOP.serviceDeposit}, web3CallbackLogIfError);
 }
 
-function callRelease(amountInEth) {
-  BOPVue.BOP.contractInstance.release(web3.toWei(amountInEth,'ether'), {'gas':300000}, web3CallbackLogIfError);
+function callRelease(amountInWei) {
+  BOPVue.BOP.contractInstance.release(amountInWei, {'gas':300000}, web3CallbackLogIfError);
 }
 function releaseFromForm() {
-  var amount = new web3.BigNumber($('#release-amount-input').val());
-  callRelease(amount);
+  var amountInEth = $('#release-amount-input').val();
+  
+  var amountInWei = web3.toWei(amountInEth,'ether');
+  if (amountInWei <= 0)
+    alert("Error: the amount must be greater than 0.");
+  else if (amountInWei > BOPVue.BOP.balance)
+    alert("Error: the Payment does not contain that much ether!\nRequested release: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
+  else
+    callRelease(amountInWei);
 }
 
 function callBurn(amountInEth) {
   BOPVue.BOP.contractInstance.burn(web3.toWei(amountInEth,'ether'), web3CallbackLogIfError);
 }
 function burnFromForm() {
-  var amount = new web3.BigNumber($('#burn-amount-input').val());
-  callBurn(amount);
+  var amountInEth = $('#burn-amount-input').val();
+  
+  var amountInWei = web3.toWei(amountInEth,'ether');
+  if (amountInWei <= 0)
+    alert("Error: the amount must be greater than 0.");
+  else if (amountInWei > BOPVue.BOP.balance)
+    alert("Error: the Payment does not contain that much ether!\nRequested burn: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
+  else
+    callBurn(amount);
 }
 
 function callAddFunds(includedEth) {

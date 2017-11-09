@@ -1,3 +1,18 @@
+function formatWeiValue(wei) {
+  var ether = web3.fromWei(wei, "ether");
+  if (wei.toString().length > 17)
+    return ether + " ETH";
+  else if (wei.toString().length > 14)
+    return ether*1000 + " mETH";
+  else if (wei.toString().length > 11)
+    return ether*1000000 + " \u00B5ETH";
+  else if (wei.toString().length > 8)
+    return ether*1000000000 + " nETH";
+  else if (wei.toString().length > 5)
+    return ether*1000000000000 + " pETH";
+  else return wei.toString() + " wei";
+}
+
 function prepareBOPFactoryContract() {
   BOPFactory.ABI = BOP_FACTORY_ABI;
   BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);

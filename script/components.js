@@ -32,18 +32,7 @@ Vue.component('ether-output', {
   props: ['wei'],
   computed: {
     formatted: function() {
-      var ether = web3.fromWei(this.wei, "ether");
-      if (this.wei.toString().length > 17)
-        return ether + " ETH";
-      else if (this.wei.toString().length > 14)
-        return ether*1000 + " mETH";
-      else if (this.wei.toString().length > 11)
-        return ether*1000000 + " \u00B5ETH";
-      else if (this.wei.toString().length > 8)
-        return ether*1000000000 + " nETH";
-      else if (this.wei.toString().length > 5)
-        return ether*1000000000000 + " pETH";
-      else return this.wei.toString() + " wei";
+      return formatWeiValue(this.wei);
     }
   },
   template: "<span>{{formatted}}</span>"
