@@ -49,6 +49,7 @@ function prepareWeb3() {
         window.etherscanAPIURL = "https://ropsten.etherscan.io/api?";
         BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
         prepareBOPFactoryContract();
+        $('#ropstenWarning').show();
         onWeb3Ready();
       }
       else{
