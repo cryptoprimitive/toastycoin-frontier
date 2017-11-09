@@ -1,17 +1,19 @@
-# Toastycoin
+# Toastycoin Frontier
 
-Toastycoin is a client-side interface for creating, browsing, and interacting with Burnable Payments (BPs), a specific kind of Ethereum smart contract (see BurnableOpenPayment.sol).
+Toastycoin Frontier is a client-side interface for creating, browsing, and interacting with Burnable Payments (BPs), a specific kind of Ethereum smart contract (see BurnableOpenPayment.sol).
 
 Later on in development, the project could be expanded to interact with other contract types.
 
-## Installation
-The only software required for Toastycoin to run is a (local) webserver and access to an ethereum node. The easiest way to achieve this is to install the [metamask plugin](https://metamask.io/).
+# Usage
 
-Download and unzip or clone the repository files into a directory on a webserver.
+Simply navigate to www.toastycoin.com or https://coinop-logan.github.io if you have Metamask or another web3 provider.
+
+## Installation
+If you'd like to run the Toastycoin Frontier code locally, run a (local) webserver and ensure you have access to an Ethereum node, then download and unzip or clone the repository files into a directory accessible to the webserver.
 ```
 git clone https://github.com/coinop-logan/coinop-logan.github.io
 ```
 
-See also the alternative interface, "Toastycoin G". https://github.com/gianlucaschoefer/gianlucaschoefer.github.com
+See also the alternative interface, "Toastycoin Beta". https://github.com/gianlucaschoefer/gianlucaschoefer.github.com
 
-Toastycoin G is Toastycoin's predecessor, and Gianluca is responsible for overcoming many middle- and late-stage development challenges for the Toastycoin interface.
+Toastycoin Beta is Toastycoin Frontier's predecessor; Gianluca is responsible for overcoming many middle- and late-stage development challenges for the Toastycoin interface.

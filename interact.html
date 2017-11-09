@@ -131,8 +131,8 @@
           <div class="col-sm-12">
             <div class="form-group">
               <textarea id="statement-input" class="form-control" rows="3"></textarea>
-              <div v-if="userIsPayer" align='left'><button type="button" class="btn btn-basic" onClick="logPayerStatementFromForm()">Log Payer Statement</button></div>
-              <div v-else-if="userIsWorker" align='right'><button type="button" class="btn btn-basic" onClick="logWorkerStatementFromForm()">Log Worker Statement</button></div>
+              <div v-if="userIsPayer" align='left'><button type="button" class="btn btn-primary" onClick="logPayerStatementFromForm()">Log Payer Statement</button></div>
+              <div v-else-if="userIsWorker" align='right'><button type="button" class="btn btn-primary" onClick="logWorkerStatementFromForm()">Log Worker Statement</button></div>
             </div>
           </div>
         </div>
@@ -180,7 +180,7 @@
         </div>
       </div>
     </div>
-    <div class="alert alert-warning">Note: The event list below does not yet auto-update</div>
+    <div class="alert alert-warning">Note: The event list below does not yet auto-update, and if using Metamask without a local node, it may take some time for logs to appear after being processed (In some cases <a href="https://gianlucaschoefer.github.io/">Toastycoin Beta</a> shows event logs more reliably).</div>
     <div id="eventLogVue">
       <div class="well">
         <div v-for="event in events">
