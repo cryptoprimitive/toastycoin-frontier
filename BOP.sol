@@ -1,20 +1,33 @@
-//A BurnableOpenPayment is instantiated with a specified payer and a serviceDeposit.
-//The worker is not set when the contract is instantiated.
+//Note that interfaces refer to these contracts as "Burnable Payments", rather than "Burnable Open Payments".
+//The next version of this contract will follow suit,
+//removing the misleading/redundant "Open" from the names of these contracts.
+
+//A BurnableOpenPayment is instantiated with a Payer, a title, a serviceDeposit, and an autoreleaseInterval.
+//Worker is not set when the contract is instantiated; the payment is in the Open state.
 
 //The constructor is payable, so the contract can be instantiated with initial funds.
 //In addition, anyone can add more funds to the Payment by calling addFunds.
 
-//All behavior of the contract is directed by the payer, but
-//the payer can never directly recover the payment,
-//unless he calls the recover() function before anyone else commit()s.
+//All behavior of the contract is directed by the Payer,
+//but he can only recover() the ether if the contract is in the Open state.
 
-//If the BOP is in the Open state,
-//anyone can become the worker by contributing the serviceDeposit with commit().
-//This changes the state from Open to Committed. The BOP will never return to the Open state.
-//The worker will never be changed once it's been set via commit().
+//In the Open state,
+//Payer can logPayerStatement() to add additional details, clarifications, or corrections.
+//Anyone can become the Worker by contributing the serviceDeposit with commit();
+//this changes the state from Open to Committed. The BOP will never return to the Open state.
+//After this state change, Worker will never be changed.
 
-//In the committed state,
-//the payer can at any time choose to burn or release to the worker any amount of funds.
+//In the Committed state,
+//AutoreleaseTime is set to (now + autoreleaseInterval).
+//Payer/Worker can logPayerStatement() or logWorkerStatement(), respectively.
+//Payer can at any time choose to burn() or release() to Worker any amount of funds.
+//Payer can delayAutorelease() setting the autoreleaseTime to (now + autoreleaseInterval), any number of times.
+//If autoreleaseTime comes, Worker can triggerAutorelease() to claim all ether remaining in the payment.
+//Once the balance of the payment is 0, the state changes to Closed.
+
+//In the Closed state,
+//Payer and Worker can still log statements.
+//If addFunds() is called, the contract returns to the Committed state.
 
 pragma solidity ^ 0.4.10;
 contract BurnableOpenPaymentFactory {
