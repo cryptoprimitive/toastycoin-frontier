@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>TC | BP contract changes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/common.css">
+  <!--<link rel="stylesheet" href="border.css">-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="script/loadNavbar.js"></script>
+</head>
+
+<body>
+
+<div id="nav-placeholder"></div>
+<div class="container">
+  <div class="well" style="font-size:1.8rem">
+    <p>In March 2017, the first version of the Burnable Payment was tested in an <a href="https://www.reddit.com/r/ethereum/comments/61t5c8/i_just_burned_1_eth_on_purpose_for_my_next_trick/">ether-burning stunt</a>. Since then, some modifications have been made.</p>
+    <h1>Contract Changes</h1>
+      <h3>New Features/Behavior</h3>
+        <ul>
+          <li><b>Autorelease</b> protects against lazy payers. Each BP must now specify an autoreleaseInterval. Payer can delay the autorelease as many times as he wants, but if the timer reaches 0, Worker can triggerAutorelease() and claim all ether left in the payment.</li>
+          <li><b>Recover()</b> allows Payer to reclaim funds from any Open BP. (This was already possible in a roundabout way: Payer could commit to his payment and release it to himself). Payer still cannot recover the payment after a worker has committed.</li>
+          <li><b>The fallback function is no longer payable</b>; addFunds must be explicitly called to deposit more ether, but any Ethereum user can do so.</li>
+        </ul>
+      <h3>Non-Behavioral or Minor Changes</h3>
+        <ul>
+          <li><b>States</b> are now used. There are three states: Open (no worker has committed); Committed (Worker is set and will never change); and Closed (no funds left in the payment). A Committed BP can never return to the Open state, but a Closed BP can return to a Committed state if addFunds() is called.</li>
+          <li><b>Events</b> now accompany any action (this is how Toastycoin populates the "events" list when viewing a BP).</li>
+          <li><b>amountDeposited, amountBurned, and amountReleased variables</b> have been added.</li>
+          <li><b>Statements are not stored in the contract</b>, but just logged as an event. The only text stored in the contract is the title.</li>
+          <li><b>The "burn address" has changed</b> from 0xdead to 0x0.</b></li>
+          <li><b>getFullState()</b> can be used to easily fetch all variables in a BP.</li>
+          <li>Some variables have new, clearer names:</li>
+          <ul>
+            <li>Recipient -> Worker</li>
+            <li>commitThreshold -> serviceDeposit</li>
+          </ul>
+        </ul>
+  </div>
+</div>
+
+</body>
