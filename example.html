@@ -19,6 +19,26 @@
       <p>Note: the images in this page are a bit out of date; they refer to Burnable Payments as "BOPs" and don't necessarily resemble the latest version of Toastycoin.</p>
       <p>Aside from these superficial discrepancies, the information below remains accurate.</p>
     </div>
+    <p>Programmers are invited to follow along in the <a href="https://github.com/coinop-logan/coinop-logan.github.io/blob/master/BOP.sol">full Burnable Payment source code</a>, but the leading comments in the source code sum up the basic rules:</p>
+    <pre>...
+//In the Open state,
+//Payer can logPayerStatement() to add additional details, clarifications, or corrections.
+//Anyone can become the Worker by contributing the serviceDeposit with commit();
+//this changes the state from Open to Committed. The BOP will never return to the Open state.
+//After this state change, Worker will never be changed.
+
+//In the Committed state,
+//AutoreleaseTime is set to (now + autoreleaseInterval).
+//Payer/Worker can logPayerStatement() or logWorkerStatement(), respectively.
+//Payer can at any time choose to burn() or release() to Worker any amount of funds.
+//Payer can delayAutorelease() setting the autoreleaseTime to (now + autoreleaseInterval), any number of times.
+//If autoreleaseTime comes, Worker can triggerAutorelease() to claim all ether remaining in the payment.
+//Once the balance of the payment is 0, the state changes to Closed.
+
+//In the Closed state,
+//Payer and Worker can still log statements.
+//If addFunds() is called, the contract returns to the Committed state.
+...</pre>
     <h1>A Simple Example</h1>
     <p>Let's imagine the payer needs a transcript written for an audio recording. He is willing to pay 0.5 ETH for the service, and sets a <i>service deposit</i> of 0.1 ETH. He also sets an <i>autorelease timer</i>, which is explained later.</p>
     <center><img src="https://i.imgur.com/VWYSMav.png"></center>
@@ -53,7 +73,7 @@
     <p>For example, one could create:</p>
     <ul>
       <li>A server that monitors BPs and emails users when a BP's state changes (the server could charge X ETH per Y notifications)</li>
-      <li>A more advanced search/browse utility, with order-by or filter options</li>
+      <li>A more advanced search/browse utility, to filter through the total pool of BPs</li>
       <li>A bot that responds to BPs of a given format, to provide some automatic service</li>
       <li>A specialized interface that creates BPs for some specific use-case</li>
       <li>A tool that analyzes and aggregates data for specific Ethereum addresses, facilitating reputation research: how much has a given user released vs burned? How many BPs have they used?</li>
