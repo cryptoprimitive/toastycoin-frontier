@@ -40,8 +40,8 @@
   </div>
   <div id="web3Div" hidden='true'>
     <br>
-    <p style="font-size:1.8rem">If this is your first BOP, please read <a href="creatingbops.html">Creating effective BOPs</a>.</p>
-    <h1 class="text-center">Create BOP</h1>
+    <p style="font-size:1.8rem">If this is your first BP, please read <a href="creatingbops.html">Creating effective BPs</a>.</p>
+    <h1 class="text-center">Create Burnable Payment</h1>
     <form id='NewBOPForm'>
       Payer: <input id='payerInput' name='payerInput' type='text' placeholder='Double-click to fetch from Metamask/web3' size='44' ondblclick="populatePayerInputFromMetamask()"><br>
       Title: <input id='titleInput' name='titleInput' size=70 oninput="updateLengthChecker()"><br>
@@ -50,7 +50,7 @@
       Payment Amount: <input id = 'paymentAmountInput' name='paymentAmountInput' type='text' size='7'>ETH<br>
       Service Deposit: <input id = 'serviceDepositInput' name='serviceDepositInput' type='text' size='7'>ETH<br>
       Autorelease Timer: <input type='text' id='autoreleaseTimerInput' name='autoreleaseTimerInput'> days<br>
-      <input type='button' class="btn btn-primary" onclick='newBOPFromForm()' value='Create BOP'>
+      <input type='button' class="btn btn-primary" onclick='newBOPFromForm()' value='Create BP'>
     </form>
     <div id='outputDiv'></div>
     <div class="panel panel-info">

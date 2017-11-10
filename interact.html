@@ -90,13 +90,13 @@
               <div class="col-xs-4">
                 <div class="well" style="background-color:#ccffcc;margin-bottom:2px">
                   <font style="font-size:2rem"><ether-output :wei=BOP.balance></ether-output></font><br>
-                  held in BOP
+                  held in BP
                 </div>
                 <div v-if="BOP.state == 1 && userIsPayer" class="btn-group" style="display:flex">
                   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#release-modal">Release</button>
                   <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#burn-modal">Burn</button>
                 </div>
-                <button v-if="BOP.state == 0 && userIsPayer" class="btn btn-danger" onClick="callRecoverFunds()">Cancel BOP<br>(recover funds)</button>
+                <button v-if="BOP.state == 0 && userIsPayer" class="btn btn-danger" onClick="callRecoverFunds()">Cancel BP<br>(recover funds)</button>
               </div>
               <div class="col-xs-4">
                 <div v-if="BOP.state == 0" class="well" style="background-color:#bbffff;display:inline-block">

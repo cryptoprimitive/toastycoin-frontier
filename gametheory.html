@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-  <title>TC | BOP Game Theory</title>
+  <title>TC | BP Game Theory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/common.css">
@@ -17,15 +17,19 @@
 <div id="nav-placeholder"></div>
 <div class="container">
   <div class="well" style="font-size:1.8rem">
+    <div class="alert alert-info">
+      <p>Note: the images in this page are a bit out of date; they refer to Burnable Payments as "BOPs" and don't necessarily resemble the latest version of the Toastycoin interface.</p>
+      <p>Aside from these superficial discrepancies, the information below remains accurate.</p>
+    </div>
     <h1>Rules of the Game</h1>
-      <p>First, let's go over some relevant rules of the BOP.</p>
+      <p>First, let's go over some relevant rules of the Burnable Payment "game".</p>
       <ul>
-        <li>A payer creates a BOP with a certain amount of ether, a service request (in the title and initial statement), and with a specified service deposit.</li>
-        <li>None of the settings of the BOP can be changed after creation (although the payer can add additional statements or deposit more funds)</li>
-        <li>Any Ethereum user can commit to the BOP by depositing ether equal to the service deposit into the BOP, thereby becoming the worker. The BOP then enters the Committed state, in which:</li>
+        <li>A payer creates a BP with a certain amount of ether, a service request (in the title and initial statement), and with a specified service deposit.</li>
+        <li>None of the settings of the BP can be changed after creation (although the payer can add additional statements or deposit more funds)</li>
+        <li>Any Ethereum user can commit to the BP by depositing ether equal to the service deposit into the BP, thereby becoming the worker. The BP then enters the Committed state, in which:</li>
         <ul>
           <li>The payer can no longer recover the ether in the payment.</li>
-          <li>The worker is "locked in" to the BOP; this role can never be changed or revoked.</li>
+          <li>The worker is "locked in" to the BP; this role can never be changed or revoked.</li>
           <li>The payer can release the payment to the worker, or burn (meaning <a href="" style="cursor:pointer" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-content="When ether is <i>burned</i>, this means it's sent to the address 0x0. Since no one can access any funds from this address, the ether is effectively destroyed&mdash;removed permanently from circulation.">destroy</a>) it.</li>
         </ul>
       </ul>
@@ -36,10 +40,10 @@
       </ul>
       <p>(We encourage Solidity developers to follow along in the <a href="https://etherscan.io/address/0x38b394cd27c3b0d865f58a4512b65c7b0ab6db66#code">source code</a>.)</p>
       <hr>
-      <p>(<b>Disclaimer:</b> Below we will use the words "never" and "always" in a way that could be called hyperbole. We use these terms when the reality is "close enough to count", like how one might say "the bathroom on the 4th floor is <i>always</i> crowded" or "you'll <i>never</i> hit a car at a traffic light if you only go when it's green". While not technically true, these statements are close enough to reliably inform your behavior to avoid the 4th floor bathroom or not stop when there's a green traffic light. Similarly, the below text will make "never" and "always" claims that are <i>accurate enough</i> for BOPs to be useful.)</p>
+      <p>(<b>Disclaimer:</b> Below we will use the words "never" and "always" in a way that could be called hyperbole. We use these terms when the reality is "close enough to count", like how one might say "the bathroom on the 4th floor is <i>always</i> crowded" or "you'll <i>never</i> hit a car at a traffic light if you only go when it's green". While not technically true, these statements are close enough to reliably inform your behavior to avoid the 4th floor bathroom or not stop when there's a green traffic light. Similarly, the below text will make "never" and "always" claims that are <i>accurate enough</i> for BPs to be useful.)</p>
       <h1>The Game Tree</h1>
       <p>In this discussion we'll make use of a couple tools from game theory: <i>game trees</i> and <i>backward induction</i>. If these concepts are new to you, I suggest taking a look at <a href="http://www.umass.edu/preferen/Game%20Theory%20Evolving/GTE%20Public/GTE%20Game%20Theory%20Basic%20Concepts.pdf">this introduction to game trees</a>, which uses backward induction (but doesn't explicitly say so), as well as <a href="https://en.wikipedia.org/wiki/Backward_induction">the wiki on backward induction</a>.</p>
-      <p>First, we'll build our game tree. The first node is the beginning of our "game"&#8212;the creation of the BOP by the payer. Each subsequent level represents a choice one of the players can make.</p>
+      <p>First, we'll build our game tree. The first node is the beginning of our "game"&#8212;the creation of the BP by the payer. Each subsequent level represents a choice one of the players can make.</p>
       <center><img src="resources/game_tree.png"></center>
       <p>Each node with no children represents an end state to the game. Here we can see there are 5 end states:</p>
       <ul>
@@ -54,33 +58,33 @@
     <h2>To Burn or Release</h2>
       <p>First, a couple notes:</p>
       <ul>
-        <li>We assume the payer intends to possibly use BOPs in the future, and is therefore mindful of the reputation he builds and how it impacts his future success with BOPs. We will revisit to this assumption further below.</li>
+        <li>We assume the payer intends to possibly use BPs in the future, and is therefore mindful of the reputation he builds and how it impacts his future success with BPs. We will revisit to this assumption further below.</li>
         <li>Regardless of the payer's decision, he will not recover the ether in the payment, so it does not figure into the payer's choice on turn C.</li>
         <li>Whether the work is provided or not has been decided in the previous turn; therefore this will not impact the payer's decision: either he has the product or he does not, and his choice here will not change that.</li>
-        <li>We ignore emotional responses like gratitude or anger. Although they would strengthen the argument for BOPs, they don't really have a place in game theoretical analysis.</li>
+        <li>We ignore emotional responses like gratitude or anger. Although they would strengthen the argument for BPs, they don't really have a place in game theoretical analysis.</li>
       </ul>
       <b>C1: No work delivered; payer releases payment</b>
-        <p>In this outcome, the payer will establish a reputation for releasing a payment even if the worker does not complete the task. With such a reputation, lazy, incapable, or dishonest workers will be more likely to commit to the payer's future BOPs. "After all," they might think, "he's released the payment for no work before; perhaps he'll do it again." Such a repuation would thereby decrease the future utility of BOPs&#8212;we could say that the payer has been marked as an "easy target".</p>
+        <p>In this outcome, the payer will establish a reputation for releasing a payment even if the worker does not complete the task. With such a reputation, lazy, incapable, or dishonest workers will be more likely to commit to the payer's future BPs. "After all," they might think, "he's released the payment for no work before; perhaps he'll do it again." Such a repuation would thereby decrease the future utility of BPs&#8212;we could say that the payer has been marked as an "easy target".</p>
         <p>This is a negative outcome, to the extent that the payer expects to try to use the service again, because he will face a greater risk of attracting scammers or lazy/incompetent workers.</p>
       <b>C2: No work delivered; payer burns payment</b>
-        <p>Here, the payer establishes a reputation for burning the payment in response to a worker who does not complete the work. This will have an opposite effect of outcome 1: lazy, incapable, or dishonest workers will be less likely to commit to the payer's future BOPs. "It didn't work the first time; it's unlikely to work next time." This would increase the future utility of BOPs by dissuading such attempts.</p>
+        <p>Here, the payer establishes a reputation for burning the payment in response to a worker who does not complete the work. This will have an opposite effect of outcome 1: lazy, incapable, or dishonest workers will be less likely to commit to the payer's future BPs. "It didn't work the first time; it's unlikely to work next time." This would increase the future utility of BPs by dissuading such attempts.</p>
       <b>C3: Work delivered; payer releases payment</b>
         <p>Here the payer establishes a reputation for releasing the payment in response to completed work. Like choice C1, this makes it more likely that a worker will commit, but unlike C1, it's only <i>confident, honest workers</i> that will be thus attracted. "He released for good work last time; therefore, it's likely he'll release again if I can do the work."</p>
-        <p>This increases the future utility of the BOP mechanism for the payer.</p>
+        <p>This increases the future utility of the BP mechanism for the payer.</p>
       <b>C4: Work delivered; payer burns payment</b>
-        <p>Like outcome 2, this makes others less likely to commit, but this time it's dissuading even honest, capable workers. This decreases the utility of future BOPs.</p>
+        <p>Like outcome 2, this makes others less likely to commit, but this time it's dissuading even honest, capable workers. This decreases the utility of future BPs.</p>
       <h3>Concluding Turn C</h3>
-        <p><b>A rational payer will never choose options C1 or C4.</b> With the payment already spent, and the work already either delivered or not delivered, the payer will choose to build a reputation that makes any of his future BOPs more successful.</p>
+        <p><b>A rational payer will never choose options C1 or C4.</b> With the payment already spent, and the work already either delivered or not delivered, the payer will choose to build a reputation that makes any of his future BPs more successful.</p>
         <p>In short, he will always choose to release for completed work, and burn otherwise.</p>
         <p>This might seem like an underwhelming conclusion, for so much work, but we now know what a rational payer will do in every single case, and can cross of certain outcomes as <i>game theoretically impossible</i>.</p>
         <center><img src="resources/game_tree2.png"></center>
         <p>We can now move up a level, to row B.</p>
     <h2>To Scam, Work, or Not Commit at all.</h2>
-      <p>At row B, the worker is looking at an Open BOP and deciding whether to commit, and if so, whether to attempt to do the work. It's convenient at this point to define some variables:</p>
+      <p>At row B, the worker is looking at an Open BP and deciding whether to commit, and if so, whether to attempt to do the work. It's convenient at this point to define some variables:</p>
       <ul>
-        <li><i>D:</i> The service deposit, which the worker must pay if he chooses moves 1 or 2.</li>
+        <li><i>D:</i> The service deposit, which the worker must pay if he chooses moves B1 or B2.</li>
         <li><i>P:</i> The original payment amount, which the worker will get (along with a refund of D) if the payer releases the payment.</li>
-        <li><i>E:</i> The effort required of the worker to complete the work requested in the BOP</li>
+        <li><i>E:</i> The effort required of the worker to complete the work requested in the BP</li>
       </ul>
       <p>We will assume the worker has modeled the payer as a rational actor. Let's see how each choice works out.</p>
       <b>B1: Worker commits but does not do the work</b>
@@ -100,22 +104,22 @@
         </ul>
         <p>In no case is node B1 chosen, so we can cross it off, as well as its remaining child node.</p>
         <center><img src="resources/game_tree3.png"></center>
-        <p>With that, we can finally make an interesting statement about BOPs.</p>
-    <h2>Why create a BOP?</h2>
-      <p>When a payer creates a BOP, anyone else considering committing will almost definitely make one of two choices:</p>
+        <p>With that, we can finally make an interesting statement about BPs.</p>
+    <h2>Why create a BP?</h2>
+      <p>When a payer creates a BP, anyone else considering committing will almost definitely make one of two choices:</p>
       <ul>
         <li>They don't commit, either because they don't intend to provide the service or because they don't expect the effort to be worth the payout.</li>
         <li>They do commit, indicating they do intend to provide the service and are confident they'll be able to. (The higher the service deposit, the more confident they must be.)</li>
       </ul>
-      <p>So, why would a payer open a BOP? Because if no one commits, he can recover the payment, and if someone does commit, <b>there is a strong game-theoretical guarantee that the worker will complete the work.</b> The higher the service deposit, the stronger the guarantee.</p>
+      <p>So, why would a payer open a BP? Because if no one commits, he can recover the payment, and if someone does commit, <b>there is a strong game-theoretical guarantee that the worker will complete the work.</b> The higher the service deposit, the stronger the guarantee.</p>
     <hr>
   <h1>Some Loose Ends</h1>
     <h2>What if the payer doesn't intend to use the service again?</h2>
-      <p>When analyzing row C of our game tree, we took into account the effect a choice would have on the payer's reputation. But if the payer is sure he'll never use BOPs again, he won't care about his reputation. Indeed, he may not even bother to return to release or burn the payment, after the service is rendered. Why should he? (other than to be nice)</p>
-      <p>This is an issue, because we can no longer reason about the payer's final choice, row C, in our game tree, which means we can't go on to reason about rows B or A either. To help alleviate this, BOPs have an "autorelease" feature.</p>
+      <p>When analyzing row C of our game tree, we took into account the effect a choice would have on the payer's reputation. But if the payer is sure he'll never use BPs again, he won't care about his reputation. Indeed, he may not even bother to return to release or burn the payment, after the service is rendered. Why should he? (other than to be nice)</p>
+      <p>This is an issue, because we can no longer reason about the payer's final choice, row C, in our game tree, which means we can't go on to reason about rows B or A either. To help alleviate this, BPs have an "autorelease" feature.</p>
       <p><b>Autorelease</b> is essentially protection for the worker against lazy payers, and has the following rules:<p>
       <ul>
-        <li>The payer sets the autorelease time upon BOP creation. This can be anywhere from a few seconds to several years.</li>
+        <li>The payer sets the autorelease time upon BP creation. This can be anywhere from a few seconds to several years.</li>
         <li>The timer begins to countdown as soon as a worker commits.</li>
         <li>The payer can reset the timer to the max time, as many times as he wants.</li>
         <li>If the timer runs out, the worker can trigger an autorelease of the payment. The payment will close and send all contained ether to the worker.</li>
@@ -123,20 +127,20 @@
       <p>With these rules, if a payer never returns to the payment after a worker has committed, the payment will eventually release. With such a "lazy payer", our game tree would then look like this:</p>
       <center><img src="resources/game_tree4.png"></center>
       <p>Of course, now we have another issue: a dishonest or incapable worker might now commit, counting on outcome C1. But this assumes that the worker somehow <i>knows</i> to model the payer as a "lazy payer". More likely, the worker will only suspect the payer <i>might</i> be lazy.</p>
-      <p>Even if a payer does not plan to user BOPs again, he doesn't need to broadcast this information. Users looking at the Open BOP won't know whether to model the payer as a lazy payer who will never use BOPs again, or a payer who is interested in building a good reputation. From the perspective of these users, we might draw our game tree like so:</p>
+      <p>Even if a payer does not plan to user BPs again, he doesn't need to broadcast this information. Users looking at the Open BP won't know whether to model the payer as a lazy payer who will never use BPs again, or a payer who is interested in building a good reputation. From the perspective of these users, we might draw our game tree like so:</p>
       <center><img src="resources/game_tree5.png"></center>
       <p>Here, we've combined the analysis of row C from our first assumption (the payer will make a choice with a mind to his reputation) with the lazy payment assumption (the payer will not return to the payment at all). In both scenarios, outcome C4 will never be chosen, so it's crossed out and outcome C3 is not. But whether outcome C1 or C2 is chosen depends on whether the payer is lazy.</p>
       <p>Now honest workers still have a clear route to payment: whether the payer is lazy or not, they can guarantee a positive outcome by doing the work.</p>
       <p>Dishonest workers hoping for outcome C1 must decide if the risk is worth it. A payer can dissuade this by increasing the service deposit and forcing the scammer to risk more, and in general convincing users that they will indeed be back to cast a final burn/release judgement.</p>
-      <p>Finally, this is really only an issue for a payer's very first BOP. As soon as they have a reputation showing the right burn/release behavior, users viewing their BOPs can count on this behavior continuing with a very high likelihood.</p>
+      <p>Finally, this is really only an issue for a payer's very first BP. As soon as they have a reputation showing the right burn/release behavior, users viewing their BPs can count on this behavior continuing with a very high likelihood.</p>
     <h2>What if the worker provides bad or half-complete work?</h2>
-      <p>We won't go into such rigorous analysis here, but we can still make some useful conclusions. What should a payer do, to maximise the utility of future BOPs? Fortunately, a payer can choose to burn or release any part of the payment, giving him a more nuanced response than a binary punish/reward option.</p>
-      <p>For simplicity's saske, let's imagine The BOP contains a request to mow the payer's lawn, and the worker does a bad job, leaving some patches unmowed.</p>
+      <p>We won't go into such rigorous analysis here, but we can still make some useful conclusions. What should a payer do, to maximise the utility of future BPs? Fortunately, a payer can choose to burn or release any part of the payment, giving him a more nuanced response than a binary punish/reward option.</p>
+      <p>For simplicity's saske, let's imagine The BP contains a request to mow the payer's lawn, and the worker does a bad job, leaving some patches unmowed.</p>
       <p>Burning the whole payment would likely make future honest workers more reluctant to commit, because they worry the payment might be burned if they're not "perfect". Releasing the whole payment isn't ideal either: this might be too much of a comfort, attracting workers who are not skilled and won't do a good job. A better response would be to burn part of it and release the rest, as well as log a payer statement explaining his reasoning (possibly including pictures of the issues). This way, future workers will know that mistakes will be punished, but not without mercy. Confident workers would still commit, but less confident workers will hesitate.</p>
     <h2>What about extortion attempts?</h2>
-      <p>TODO. For now, read the "No extortion attempts" section of <a href="https://medium.com/@coinop.logan/toasted-money-4fb07492acf3">this medium article</a>.</p>
+      <p>See the "No extortion attempts" section of <a href="https://medium.com/@coinop.logan/toasted-money-4fb07492acf3">this medium article</a>.</p>
     <h2>Don't some people just want to watch the world burn?</h2>
-      <p>The concern here is that when a payer opens a BOP, let's say with 3 ETH and a service deposit of 1 ETH, someone will spend 1 ETH to commit, just to force the payer to burn the payment. As stated in <a href="https://www.reddit.com/r/ethereum/comments/61t5c8/i_just_burned_1_eth_on_purpose_for_my_next_trick/dfh1t6p/?st=j95xx6sm&sh=ac065c94">this reddit comment</a>, "So for 3 ETH I can force you to burn 15 ETH? Sounds like a good deal for me."</p>
+      <p>The concern here is that when a payer opens a BP, let's say with 3 ETH and a service deposit of 1 ETH, someone will spend 1 ETH to commit, just to force the payer to burn the payment. As stated in <a href="https://www.reddit.com/r/ethereum/comments/61t5c8/i_just_burned_1_eth_on_purpose_for_my_next_trick/dfh1t6p/?st=j95xx6sm&sh=ac065c94">this reddit comment</a>, "So for 3 ETH I can force you to burn 15 ETH? Sounds like a good deal for me."</p>
       <p>This only makes sense if someone both has money to spend, and has a <i>really great time</i> seeing a stranger's money go to waste on the Internet. Of course trolls abound on the Internet, but it's hard to imagine they'll be regularly shelling out real money just to confound someone's effort to spend money (although that might depend on what the payer is trying to buy).</p>
       <p>In any case, to the extent that this is an issue, payers can just increase the service deposit amounts.</p>
   </div>
