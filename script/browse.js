@@ -31,7 +31,7 @@ function fetchAllBOPs() {
   //Find number of BOPs stored in Factory "BOPs" array
   BOPFactory.contractInstance.getBOPCount(function(err,res){
     if (err) {
-      console.log("Error calling BOP method: " + err.message);
+      console.log("Error calling BP method: " + err.message);
     }
     else {
       console.log(res);
@@ -41,7 +41,7 @@ function fetchAllBOPs() {
       for (var i=0; i<numBOPs; i++) {
         BOPFactory.contractInstance.BOPs(i, function(err, res) {
           if (err) {
-            console.log("Error calling BOP method: " + err.message);
+            console.log("Error calling BP method: " + err.message);
           }
           else{
             var BOPAddress = res;
@@ -49,13 +49,13 @@ function fetchAllBOPs() {
             (function(BOPAddress) {
               web3.eth.getCode(BOPAddress, function(err, res){
                 if(err) {
-                  console.log("Error calling BOP method: " + err.message);
+                  console.log("Error calling BP method: " + err.message);
                 }
                 else if(res !== "0x") {//Ignore all BOPs that have been recoverFunds'd (suicided)
                   var BOPContractInstance = BOPContract.at(BOPAddress);
                   BOPContractInstance.getFullState(function(err, res) {
                     if(err) {
-                      console.log("Error calling BOP method: " + err.message);
+                      console.log("Error calling BP method: " + err.message);
                     }
                     else {
                       var BOPFullState = res;

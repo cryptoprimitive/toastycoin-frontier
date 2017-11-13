@@ -70,7 +70,7 @@ Vue.component('create-result-row', {
   },
   template:
 `<div v-if="!(this.result.mined)">Waiting for transaction to be mined: <a target="_blank" :href="this.etherscanURL + 'tx/' + this.result.txHash">{{result.txHash}}</a></div>
-<div v-else><a target="_blank" :href="'interact.html?address=' + this.result.BOPAddress">BOP created!</a></div>
+<div v-else><a target="_blank" :href="'interact.html?address=' + this.result.BOPAddress">BP created!</a></div>
 `
 });
 
@@ -104,12 +104,12 @@ Vue.component('bop-event-row', {
   },
   template:
 `
-<div v-if="this.event.event == 'Created'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>BOP created.</div></div>
+<div v-if="this.event.event == 'Created'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>BP created.</div></div>
 <div v-else-if="this.event.event == 'FundsAdded'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccccff;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> deposited by <eth-address-output :address='event.args.from'></eth-address-output>.</div></div>
 <div v-else-if="this.event.event == 'PayerStatement'" align='left'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedPayerStatement'></div></div>
 <div v-else-if="this.event.event == 'WorkerStatement'" align='right'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedWorkerStatement'></div></div>
-<div v-else-if="this.event.event == 'FundsRecovered'" align='left'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ff8888;display:inline-block'>Payer cancelled the BOP and recovered the funds.</div></div>
-<div v-else-if="this.event.event == 'Committed'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'>Worker committed to the BOP.</div></div>
+<div v-else-if="this.event.event == 'FundsRecovered'" align='left'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ff8888;display:inline-block'>Payer cancelled the BP and recovered the funds.</div></div>
+<div v-else-if="this.event.event == 'Committed'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'>Worker committed to the BP.</div></div>
 <div v-else-if="this.event.event == 'FundsBurned'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffaaaa;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> burned.</div></div>
 <div v-else-if="this.event.event == 'FundsReleased'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> released.</div></div>
 <div v-else-if="this.event.event == 'Closed'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>Payment closed.</div></div>

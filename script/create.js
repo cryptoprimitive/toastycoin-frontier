@@ -46,13 +46,13 @@ function newBOPFromForm() {
 
   var title = $("#NewBOPForm #titleInput").val();
   if (title == '') {
-    alert("BOP must have a title!");
+    alert("BP must have a title!");
     return;
   }
   
   var initialPayerStatement = $("#NewBOPForm #initialStatementInput").val();
   if (initialPayerStatement == '') {
-    if (!confirm("Initial payer statement is empty! Are you sure you want to open a BOP without an initial statement?")) {
+    if (!confirm("Initial payer statement is empty! Are you sure you want to open a BP without an initial statement?")) {
       return;
     }
   }
@@ -72,7 +72,7 @@ function updateLengthChecker() {
     $('#lengthCheckerOutput').html("<font style='color:blue'>" + length.toString() + "/100</font>");
   }
   else {
-    $('#lengthCheckerOutput').html("<font style='color:red'>" + length.toString() + "/100<br><b>Caution!</b> Although the full title will be stored in the BOP, Toastycoin only displays the first 100 characters! Use the Initial Payer Statement to include more details.</font>");
+    $('#lengthCheckerOutput').html("<font style='color:red'>" + length.toString() + "/100<br><b>Caution!</b> Although the full title will be stored in the BP, Toastycoin only displays the first 100 characters! Use the Initial Payer Statement to include more details.</font>");
   }
 }
 

@@ -1,11 +1,11 @@
 function markBOPVerified(flag) {
   if (flag) {
     $("#verifiedOutput").css('color','green');
-    $("#verifiedOutput").html("BOP verified!");
+    $("#verifiedOutput").html("BP verified!");
   }
   else {
     $("#verifiedOutput").css('color','red');
-    $("#verifiedOutput").html("BOP <b>NOT</b> verified!");
+    $("#verifiedOutput").html("BP <b>NOT</b> verified!");
   }
 }
 
@@ -14,14 +14,14 @@ function verifyAddressIsBOP() {
   markBOPVerified(false);
   window.BOPFactory.contractInstance.getBOPCount(function(err, res) {
     if (err) {
-        console.log("Error calling BOP method: " + err.message);
+        console.log("Error calling BP method: " + err.message);
     }
     else {
       var numBOPs = Number(res);
       for (var i = 0; i < numBOPs; i++) {
         BOPFactory.contractInstance.BOPs(i, function(err, res) {
           if (err) {
-              console.log("Error calling BOP method: " + err.message);
+              console.log("Error calling BP method: " + err.message);
           }
           else if (BOPVue.BOP.address == res) {
             //we've found a match in the BOPs list in the Factory contract; the address does point to a BOP.
