@@ -99,7 +99,7 @@ compareResult = b.balance - a.balance
     },
     methods: {
       goToInteractPage: function(address) {
-        window.location.href = "interact.html?address=" + address
+        window.open("interact.html?address=" + address, '_blank');
       },
       pushBOPAndSort: function(BOP) {
         this.BOPs.push(BOP);
