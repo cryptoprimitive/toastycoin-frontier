@@ -197,8 +197,8 @@ function releaseFromForm() {
     callRelease(amountInWei);
 }
 
-function callBurn(amountInEth) {
-  BOPVue.BOP.contractInstance.burn(web3.toWei(amountInEth,'ether'), web3CallbackLogIfError);
+function callBurn(amountInWei) {
+  BOPVue.BOP.contractInstance.burn(amountInWei, {'gas':300000}, web3CallbackLogIfError);
 }
 function burnFromForm() {
   var amountInEth = $('#burn-amount-input').val();
@@ -209,7 +209,7 @@ function burnFromForm() {
   else if (amountInWei > BOPVue.BOP.balance)
     alert("Error: the Payment does not contain that much ether!\nRequested burn: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
   else
-    callBurn(amount);
+    callBurn(amountInWei);
 }
 
 function callAddFunds(includedEth) {
