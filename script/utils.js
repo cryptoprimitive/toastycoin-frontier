@@ -25,31 +25,19 @@ function prepareWeb3() {
   }
   else {//A web3 provider is present; we can continue
     $('#web3Div').show();
-    
+
     if (web3.eth.accounts.length == 0)
       $('#web3LockedWarning').show();
     else
       web3.eth.defaultAccount = web3.eth.accounts[0];
-    
-    window.BOPFactory = {};
+
     web3.version.getNetwork((err, netID) => {
       if (netID === '1') {
-        console.log("You are on the Ethereum mainnet!");
-        window.filterStartBlock = FILTER_START_BLOCK;
-        window.etherscanURL = "https://etherscan.io/"
-        window.etherscanAPIURL = "https://api.etherscan.io/api?";
-        BOPFactory.address = BOP_FACTORY_ADDRESS;
-        prepareBOPFactoryContract();
+        setContractForMainnet();
         onWeb3Ready();
       }
       else if (netID === '3') {
-        console.log("You are on the Ropsten net!");
-        window.filterStartBlock = FILTER_START_BLOCK_ROPSTEN;
-        window.etherscanURL = "https://ropsten.etherscan.io/";
-        window.etherscanAPIURL = "https://ropsten.etherscan.io/api?";
-        BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
-        prepareBOPFactoryContract();
-        $('#ropstenWarning').show();
+        setContractForRopsten();
         onWeb3Ready();
       }
       else{
@@ -57,6 +45,49 @@ function prepareWeb3() {
       }
     });
   }
+}
+
+function prepareWeb3ForBrowse() {
+  isClientProviderMissing = typeof web3 === 'undefined';
+
+  if (isClientProviderMissing) {
+    setMainnetReaderMode();
+    setContractForMainnet();
+    onWeb3Ready();
+
+    $('#web3Div').show();
+  } else {
+    prepareWeb3();
+  }
+}
+
+function setMainnetReaderMode() {
+  mainnetEndpoint = "https://mainnet.infura.io"
+
+  web3 = new Web3(new Web3.providers.HttpProvider(mainnetEndpoint))
+}
+
+function setContractForMainnet() {
+  window.BOPFactory = {};
+
+  console.log("You are on the Ethereum mainnet!");
+  window.filterStartBlock = FILTER_START_BLOCK;
+  window.etherscanURL = "https://etherscan.io/"
+  window.etherscanAPIURL = "https://api.etherscan.io/api?";
+  BOPFactory.address = BOP_FACTORY_ADDRESS;
+  prepareBOPFactoryContract();
+}
+
+function setContractForRopsten() {
+  window.BOPFactory = {};
+
+  console.log("You are on the Ropsten net!");
+  window.filterStartBlock = FILTER_START_BLOCK_ROPSTEN;
+  window.etherscanURL = "https://ropsten.etherscan.io/";
+  window.etherscanAPIURL = "https://ropsten.etherscan.io/api?";
+  BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
+  prepareBOPFactoryContract();
+  $('#ropstenWarning').show();
 }
 
 function getUrlParameter(sParam) {
@@ -72,7 +103,7 @@ function getUrlParameter(sParam) {
   }
 }
 
-function truncateTitleIfTooLong(title) {  
+function truncateTitleIfTooLong(title) {
   if (title.length > 100)
     return title.substring(0,100) + "...";
   else return title;
@@ -121,7 +152,7 @@ function copyTextToClipboard(text) {
   textArea.value = text;
 
   document.body.appendChild(textArea);
-  
+
   textArea.select();
 
   try {
