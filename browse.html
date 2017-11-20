@@ -54,7 +54,7 @@
       <table class="table table-condensed table-bordered table-hover">
         <thead>
           <tr>
-            <th>State/Autorelease</th>
+            <th>Address/State/Autorelease</th>
             <th>Payer/Worker</th>
             <th>Title</th>
             <th>Payment Status</th>
@@ -63,6 +63,7 @@
         <tbody>
           <tr v-for="BOP in BOPs">
             <td @click="goToInteractPage(BOP.address)" style="cursor:pointer">
+              <eth-address-output :address=BOP.address></eth-address-output><br>
               <bop-state-output :state=BOP.state></bop-state-output><br>
               <autorelease-output :state="BOP.state" :autorelease-interval="BOP.autoreleaseInterval" :autorelease-time="BOP.autoreleaseTime"></autorelease-output>
             </td>
