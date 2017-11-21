@@ -191,7 +191,7 @@ function releaseFromForm() {
   var amountInWei = web3.toWei(amountInEth,'ether');
   if (amountInWei <= 0)
     alert("Error: the amount must be greater than 0.");
-  else if (amountInWei > BOPVue.BOP.balance)
+  else if (BOPVue.BOP.balance.lessThan(amountInWei))
     alert("Error: the Payment does not contain that much ether!\nRequested release: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
   else
     callRelease(amountInWei);
@@ -206,7 +206,7 @@ function burnFromForm() {
   var amountInWei = web3.toWei(amountInEth,'ether');
   if (amountInWei <= 0)
     alert("Error: the amount must be greater than 0.");
-  else if (amountInWei > BOPVue.BOP.balance)
+  else if (BOPVue.BOP.balance.lessThan(amountInWei))
     alert("Error: the Payment does not contain that much ether!\nRequested burn: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
   else
     callBurn(amountInWei);
