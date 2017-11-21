@@ -37,11 +37,9 @@ function newBOPAddress(newAddress) {
   var BOP = {address:newAddress};
   BOP.contract = web3.eth.contract(BOP_ABI);
   BOP.contractInstance = BOP.contract.at(BOP.address);
-  
   BOPVue.newBOP(BOP);
   eventLogVue.newBOP(BOP);
 }
-
 function createBOPVue() {
   return new Vue({
     el: '#BOPVue',
@@ -125,15 +123,16 @@ function createEventLogVue() {
     },
     methods: {
       newBOP: function(BOP) {
-        var eventWatcher = BOP.contractInstance.allEvents({fromBlock:window.filterStartBlock});
-        eventWatcher.get(function(err, events) {
-          if (err) console.log("Error when fetching events:",err);
-          else {
-            //we have events!
-            console.log(events);
-            eventLogVue.events = events;
+        console.log('here')
+        var eventWatcher = BOP.contractInstance.allEvents({fromBlock:window.filterStartBlock,toBlock: 'latest'});
+        var myResults = eventWatcher.get(function(error, logs){
+          if(error){
+            console.log(error);
+          } else {
+            eventLogVue.events=logs;
+            console.log(logs);
           }
-        });
+        }); 
       }
     }
   });
@@ -145,7 +144,6 @@ function onWeb3Ready() {
   newBOPAddress(address);
   verifyAddressIsBOP();
 }
-
 window.addEventListener('load', function() {
   $.get("navbar.html", function(data){
     $("#nav-placeholder").replaceWith(data);
@@ -153,6 +151,7 @@ window.addEventListener('load', function() {
   
   //setup Vue that displays and tracks the BOP state.
   window.BOPVue = createBOPVue();
+
   window.eventLogVue = createEventLogVue();
   
   //interval to keep BOP updated
@@ -171,7 +170,6 @@ window.addEventListener('load', function() {
   
   prepareWeb3();
 });
-
 //BOP contract method calls
 
 function web3CallbackLogIfError(err, res) {
