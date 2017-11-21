@@ -27,7 +27,7 @@ function applyNewCompareCode() {
 function fetchAllBOPs() {
   //Create a BOP contract; later this will be called with each BOP's address to make a contractInstance
   var BOPContract = web3.eth.contract(BOP_ABI);
-  
+
   //Find number of BOPs stored in Factory "BOPs" array
   BOPFactory.contractInstance.getBOPCount(function(err,res){
     if (err) {
@@ -127,7 +127,7 @@ function onWeb3Ready() {
   BOPFactory.ABI = BOP_FACTORY_ABI;
   BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
   BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
-  
+
   fetchAllBOPs();
 }
 
@@ -135,12 +135,12 @@ window.addEventListener('load', function() {
   $.get("navbar.html", function(data){
     $("#nav-placeholder").replaceWith(data);
   });
-  
+
   window.browseVue = createBrowseVue();
-  
+
   $("#compare-code-modal").on('shown.bs.modal', function (e) {
     $("#compare-code-input").val(browseVue.compareCode);
   });
-  
-  prepareWeb3();
+
+  prepareWeb3ForBrowse();
 });
