@@ -121,7 +121,7 @@ function getBlockCallback(err, blockInfo) {
   if (err) console.log("Error when fetching block info:", err);
   else {
     eventLogVue.events.forEach(function(e) {
-      if (e.blockNumber == blockInfo.blockNumber) {
+      if (e.blockNumber == blockInfo.number) {
         e.timestamp = blockInfo.timestamp;
       }
     });
@@ -145,7 +145,6 @@ function createEventLogVue() {
               web3.eth.getBlock(e.blockNumber, getBlockCallback);
               e.timestamp = 0;
             });
-            console.log(events);
             eventLogVue.events = events;
           }
         });

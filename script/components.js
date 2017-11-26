@@ -82,9 +82,7 @@ Vue.component('blocknum-output', {
       return blocknumStr.slice(-9,-6) +"_"+ blocknumStr.slice(-6,-3) +"_"+ blocknumStr.slice(-3);
     },
     formattedTimestamp: function() {
-      var t = new Date();
-      t.setSeconds(this.timestamp);
-      return moment(t).format("YYYY.MM.DD HH:mm");
+      return moment.unix(this.timestamp).format("YYYY.MM.DD HH:mm");
     }
   },
   template: `<span style="font-size:0.7rem">@block {{formattedBlocknum}} (~{{formattedTimestamp}})</span>`
