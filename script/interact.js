@@ -117,6 +117,17 @@ function createBOPVue() {
   });
 }
 
+function getBlockCallback(err, blockInfo) {
+  if (err) console.log("Error when fetching block info:", err);
+  else {
+    eventLogVue.events.forEach(function(e) {
+      if (e.blockNumber == blockInfo.blockNumber) {
+        e.timestamp = blockInfo.timestamp;
+      }
+    });
+  }
+}
+
 function createEventLogVue() {
   return new Vue({
     el: "#eventLogVue",
@@ -129,7 +140,11 @@ function createEventLogVue() {
         eventWatcher.get(function(err, events) {
           if (err) console.log("Error when fetching events:",err);
           else {
-            //we have events!
+            //console.log(events);
+            events.forEach(function(e) {
+              web3.eth.getBlock(e.blockNumber, getBlockCallback);
+              e.timestamp = 0;
+            });
             console.log(events);
             eventLogVue.events = events;
           }

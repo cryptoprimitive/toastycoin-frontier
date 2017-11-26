@@ -75,25 +75,23 @@ Vue.component('create-result-row', {
 });
 
 Vue.component('blocknum-output', {
-  props: ['blocknum'],
+  props: ['blocknum','timestamp'],
   computed: {
     formattedBlocknum: function() {
       var blocknumStr = this.blocknum.toString();
       return blocknumStr.slice(-9,-6) +"_"+ blocknumStr.slice(-6,-3) +"_"+ blocknumStr.slice(-3);
+    },
+    formattedTimestamp: function() {
+      var t = new Date();
+      t.setSeconds(this.timestamp);
+      return moment(t).format("YYYY.MM.DD HH:mm");
     }
   },
-  template: `<span style="font-size:0.7rem">@block {{formattedBlocknum}}</span>`
+  template: `<span style="font-size:0.7rem">@block {{formattedBlocknum}} (~{{formattedTimestamp}})</span>`
 });
 
 Vue.component('bop-event-row', {
-  props: ['event', 'time'],
-/*   data: function() {
-    return {
-      align: null,
-      backgroundColor: null,
-      html: ""
-    }
-  }, */
+  props: ['event'],
   computed: {
     formattedPayerStatement: function() {
       return "Payer Statement<br><div class='well well-sm' style='margin-bottom:0;background-color:#aaffff'>"+xssFilters.inHTMLData(this.event.args.statement).replace(/(?:\r\n|\r|\n)/g, '<br />') + "</div>";
@@ -104,18 +102,18 @@ Vue.component('bop-event-row', {
   },
   template:
 `
-<div v-if="this.event.event == 'Created'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>BP created.</div></div>
-<div v-else-if="this.event.event == 'FundsAdded'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccccff;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> deposited by <eth-address-output :address='event.args.from'></eth-address-output>.</div></div>
-<div v-else-if="this.event.event == 'PayerStatement'" align='left'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedPayerStatement'></div></div>
-<div v-else-if="this.event.event == 'WorkerStatement'" align='right'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedWorkerStatement'></div></div>
-<div v-else-if="this.event.event == 'FundsRecovered'" align='left'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ff8888;display:inline-block'>Payer cancelled the BP and recovered the funds.</div></div>
-<div v-else-if="this.event.event == 'Committed'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'>Worker committed to the BP.</div></div>
-<div v-else-if="this.event.event == 'FundsBurned'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffaaaa;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> burned.</div></div>
-<div v-else-if="this.event.event == 'FundsReleased'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> released.</div></div>
-<div v-else-if="this.event.event == 'Closed'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>Payment closed.</div></div>
-<div v-else-if="this.event.event == 'Unclosed'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>Payment re-opened.</div></div>
-<div v-else-if="this.event.event == 'AutoreleaseDelayed'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffdd99;display:inline-block'>Payer reset the autorelease timer.</div></div>
-<div v-else-if="this.event.event == 'AutoreleaseTriggered'" align='center'><blocknum-output :blocknum='event.blockNumber'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffdd99;display:inline-block'>Worker triggered the autorelease.</div></div>`
+<div v-if="this.event.event == 'Created'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>BP created.</div></div>
+<div v-else-if="this.event.event == 'FundsAdded'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccccff;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> deposited by <eth-address-output :address='event.args.from'></eth-address-output>.</div></div>
+<div v-else-if="this.event.event == 'PayerStatement'" align='left'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedPayerStatement'></div></div>
+<div v-else-if="this.event.event == 'WorkerStatement'" align='right'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedWorkerStatement'></div></div>
+<div v-else-if="this.event.event == 'FundsRecovered'" align='left'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ff8888;display:inline-block'>Payer cancelled the BP and recovered the funds.</div></div>
+<div v-else-if="this.event.event == 'Committed'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'>Worker committed to the BP.</div></div>
+<div v-else-if="this.event.event == 'FundsBurned'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffaaaa;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> burned.</div></div>
+<div v-else-if="this.event.event == 'FundsReleased'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> released.</div></div>
+<div v-else-if="this.event.event == 'Closed'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>Payment closed.</div></div>
+<div v-else-if="this.event.event == 'Unclosed'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>Payment re-opened.</div></div>
+<div v-else-if="this.event.event == 'AutoreleaseDelayed'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffdd99;display:inline-block'>Payer reset the autorelease timer.</div></div>
+<div v-else-if="this.event.event == 'AutoreleaseTriggered'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffdd99;display:inline-block'>Worker triggered the autorelease.</div></div>`
 });
 
 Vue.component('autorelease-output', {
