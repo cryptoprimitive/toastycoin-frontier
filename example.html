@@ -26,7 +26,6 @@
 //Anyone can become the Worker by contributing the serviceDeposit with commit();
 //this changes the state from Open to Committed. The BOP will never return to the Open state.
 //After this state change, Worker will never be changed.
-
 //In the Committed state,
 //AutoreleaseTime is set to (now + autoreleaseInterval).
 //Payer/Worker can logPayerStatement() or logWorkerStatement(), respectively.
@@ -34,7 +33,6 @@
 //Payer can delayAutorelease() setting the autoreleaseTime to (now + autoreleaseInterval), any number of times.
 //If autoreleaseTime comes, Worker can triggerAutorelease() to claim all ether remaining in the payment.
 //Once the balance of the payment is 0, the state changes to Closed.
-
 //In the Closed state,
 //Payer and Worker can still log statements.
 //If addFunds() is called, the contract returns to the Committed state.
@@ -42,32 +40,32 @@
     <h1>A Simple Example</h1>
     <p>Let's imagine the payer needs a transcript written for an audio recording. He is willing to pay 0.5 ETH for the service, and sets a <i>service deposit</i> of 0.1 ETH. He also sets an <i>autorelease timer</i>, which is explained later.</p>
     <center><img src="https://i.imgur.com/VWYSMav.png"></center>
-    <p>For more guidance on what values to choose, see <a href="creatingbops.html">Creating Effective BPs</a>. This page is more of an overview of the entire lifecycle of a BP.</p>
-    <p>After clicking "Create BP", it will be created within the next few Ethereum blocks, and will be publicly viewable via the interact page:</p>
+    <p>For more guidance on what values to choose, see <a href="http://toastycoin.com/creatingbops.html">Creating Effective BPs</a>. This page is more of an overview of the entire life cycle of a BP.</p>
+    <p>After clicking "Create BP," it will be created within the next few Ethereum blocks and will be publicly viewable via the interact page:</p>
     <center><img class="img-responsive" src="https://i.imgur.com/YDtQSI5.png"></center>
-    <p>The above image shows the payer's view of the BP&mdash;other users don't see the "recover" button or the payer statement input form at the bottom.</p>
-    <p>Until and unless a worker is found, the BP is the "Open" state. In this state, the payer can cancel the payment and recover the entire payment. He can also add more funds or log additional Payer Statements if he likes.</p>
-    <p>Meanwhile, other users are browsing through Open BPs, looking for jobs they can do, with service deposits they can afford.</p>
+    <p>The above image shows the payer's view of the BP. Other users don't see the "recover" button or the payer statement input form at the bottom.</p>
+    <p>Until and unless a worker is found, the BP is in the "Open" state. In this state, the payer can cancel the payment and recover the entire payment. He can also add more funds or log additional Payer Statements if he likes.</p>
+    <p>Meanwhile, other users are browsing through Open BPs looking for jobs they can do with service deposits they can afford.</p>
     <center><img class="img-responsive" src="https://i.imgur.com/9lRpeTu.png"></center>
     <p>If one of these users is confident they can do the work, they can pay the service deposit to become the BP's worker. The BP will now show a "Committed" state with the worker locked in. Additionally, the worker will see a "Worker Statement" form to begin communicating with the payer.</p>
     <center><img class="img-responsive" src="https://i.imgur.com/JQBQMRD.png"></center>
-    <p>The BP is now in the "Committed" state. In this state, the worker is locked into the contract, and the payer can no longer recover the payment. Note that committed BPs hold not only the payer's original payment, but also the worker's service deposit&mdash;in our example, 0.6 ETH in total.</p>
-    <p>The fate of this 0.6 ETH is decided by the payer. Although he cannot directly recover it, he can still choose whether to release the payment to the worker or burn it (as in <a href="" style="cursor:pointer" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-content="When ether is <i>burned</i>, this means it's sent to the address 0x0. Since no one can access any funds from this address, the ether is effectively destroyed&mdash;removed permanently from circulation.">destroy</a>). He can burn or release in parts or all-at-once.</p>
-    <p>As you can see, the autorelease timer has already started counting down. This is really just protection from a "lazy payer". The payer can reset this as many times as he wants, up to the amount he specified upon BP creation (5 days, in our example). If the timer reaches 0, the worker will see a "Trigger Autorelease" button. This will release all remaining ether to the worker.</p>
+    <p>The BP is now in the "Committed" state. In this state, the worker is locked into the contract, and the payer can no longer recover the payment. Note that the committed BP is holding not only the payer's original payment, but also the worker's service deposit (in this example, 0.6 ETH in total).</p>
+    <p>The fate of this 0.6 ETH is decided by the payer. Although he cannot directly recover it, he can still choose whether to release the payment to the worker or burn it (as in <a href="http://toastycoin.com/example.html" style="cursor:pointer" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-content="When ether is &lt;i&gt;burned&lt;/i&gt;, this means it&#39;s sent to the address 0x0. Since no one can access any funds from this address, the ether is effectively destroyed&mdash;removed permanently from circulation." data-original-title="" title="">destroy</a>). He can burn or release in parts or all at once.</p>
+    <p>As you can see, the auto-release timer has already started counting down. This is really just protection from a "lazy payer." The payer can reset this as many times as he wants, up to the amount he specified upon BP creation (5 days, in our example). If the timer reaches 0, the worker will see a "Trigger Auto-release" button. This will release all remaining ether to the worker.</p>
     <center><img class="img-responsive" src="https://i.imgur.com/0BlMWtp.png"></center>
-    <p>While in the Committed state, the worker and payer begin communication using the Worker and Payer Statements respectively. Because these statements are stored on the Ethereum blockchain, they are trustless, signed, permanent and unhackable. They are also a little expensive and public, so payers and workers may negotiate a private place to chat instead. In either case, the event log below the BP information will show their public actions:<p>
+    <p>While in the Committed state, the worker and payer begin communication using the Worker and Payer Statements respectively. Because these statements are stored on the Ethereum blockchain, they are reliable, signed, permanent and unhackable. They are also a little expensive and public, so payers and workers may negotiate a private place to chat instead. In either case, the event log below the BP information will show their public actions:</p><p>
     <center><img class="img-responsive" src="https://i.imgur.com/28Fsf9H.png"></center>
-    <p>If the worker provides the transcription, the payer can release the payment. If not, the payer can burn it. Once the entire payment has been either burned or released, the BP moves to its final state, "Closed".</p>
+    <p>If the worker provides the transcription, the payer can release the payment. If not, the payer can burn it. Once the entire payment has been either burned or released, the BP moves to its final state, "Closed."</p>
     <center><img class="img-responsive" src="https://i.imgur.com/s57yVSi.png"></center>
     <hr>
-    <p>BPs utilize game theory to strongly guarantee the following, assuming <a href="creatingbops.html">an appropriate service deposit is set</a>:</p>
+    <p>BPs utilize game theory to strongly guarantee the following, assuming <a href="http://toastycoin.com/creatingbops.html">an appropriate service deposit is set</a>:</p>
     <ul>
       <li>Payers unwilling to pay for the job will never open a BP in the first place; therefore, each Open BP represents a legitimate opportunity for some capable worker to earn the payment.</li>
-      <li>A payer will only release the payment if the worker completes the job; otherwise, the payer will burn it.</li>
+      <li>A payer will only release the payment if the worker completes the job, otherwise the payer will burn it.</li>
       <li>Only capable, confident workers will risk investing the service deposit to commit to a BP. The higher the service deposit, the more confident the worker must be.</li>
     </ul>
-    <p>If you're interested in the details, see our <a href="gametheory.html">more rigorous exploration of the game theory involved</a>.</p>
-    <p>Otherwise, feel free to check out the <a href="browse.html">list of BPs</a> or <a href="create.html">open up your own BP</a>!</p>
+    <p>If you're interested in the details, see our <a href="http://toastycoin.com/gametheory.html">more rigorous exploration of the game theory involved</a>.</p>
+    <p>Otherwise, feel free to check out the <a href="http://toastycoin.com/browse.html">list of BPs</a> or <a href="http://toastycoin.com/create.html">open up your own BP</a>!</p>
     <hr>
     <p>Finally, let me point out that because BPs are nothing more than a specific kind of smart contract, anyone else can create other kinds of interfaces or tools for BPs. As long as these other tools follow the same <a href="https://etherscan.io/address/0x38b394cd27c3b0d865f58a4512b65c7b0ab6db66">BP Factory contract</a>, the pool of BPs will be shared as well: a BP created by any one interface would be reflected on all of them.</p>
     <p>For example, one could create:</p>
