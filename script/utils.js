@@ -20,10 +20,13 @@ function prepareBOPFactoryContract() {
 }
 
 function prepareWeb3() {
-  if (typeof web3 === 'undefined') {
-    $('#noProviderWarningDiv').show();
-  }
-  else {//A web3 provider is present; we can continue
+  //if (typeof web3 === 'undefined') {
+  //  $('#noProviderWarningDiv').show();
+  //}
+  //else {//A web3 provider is present; we can continue
+    if (typeof web3 === 'undefined') {
+      window.web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/fUjKw6wcuY9M21d1yhYS"));
+    }
     $('#web3Div').show();
     
     if (web3.eth.accounts.length == 0)
@@ -56,7 +59,7 @@ function prepareWeb3() {
         alert("You aren't on the Ethereum main or Ropsten net! Try changing your metamask options to connect to the main or Ropsten network, then refresh the page.");
       }
     });
-  }
+  //}
 }
 
 function getUrlParameter(sParam) {

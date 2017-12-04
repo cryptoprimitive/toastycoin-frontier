@@ -165,6 +165,8 @@ window.addEventListener('load', function() {
     $("#nav-placeholder").replaceWith(data);
   });
   
+  prepareWeb3();
+  
   //setup Vue that displays and tracks the BOP state.
   window.BOPVue = createBOPVue();
   window.eventLogVue = createEventLogVue();
@@ -182,8 +184,6 @@ window.addEventListener('load', function() {
       verifyAddressIsBOP();
     }
   });
-  
-  prepareWeb3();
 });
 
 //BOP contract method calls
