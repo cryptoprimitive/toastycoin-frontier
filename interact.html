@@ -86,7 +86,7 @@
                 <img class="img-responsive" style="min-width:9rem;width:9rem;" src="resources/arrow_deposit.png">
                 <div style="position:relative;left:1rem;top:-2.2rem"><ether-output :wei=BOP.amountDeposited></ether-output></div>
                 <div style="position:relative;left:1rem;top:-2.2rem">funded</div><br>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addfunds-modal">Add Funds</button>
+                <button v-if="userIsPayer" type="button" class="btn btn-success" data-toggle="modal" data-target="#addfunds-modal">Add Funds</button>
               </div>
               <div class="col-xs-4">
                 <div class="well" style="background-color:#ccffcc;margin-bottom:2px">
