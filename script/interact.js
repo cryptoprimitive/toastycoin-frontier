@@ -37,11 +37,9 @@ function newBOPAddress(newAddress) {
   var BOP = {address:newAddress};
   BOP.contract = web3.eth.contract(BOP_ABI);
   BOP.contractInstance = BOP.contract.at(BOP.address);
-  
   BOPVue.newBOP(BOP);
   eventLogVue.newBOP(BOP);
 }
-
 function createBOPVue() {
   return new Vue({
     el: '#BOPVue',
@@ -147,7 +145,7 @@ function createEventLogVue() {
             });
             eventLogVue.events = events;
           }
-        });
+        }); 
       }
     }
   });
@@ -159,7 +157,6 @@ function onWeb3Ready() {
   newBOPAddress(address);
   verifyAddressIsBOP();
 }
-
 window.addEventListener('load', function() {
   $.get("navbar.html", function(data){
     $("#nav-placeholder").replaceWith(data);
@@ -167,6 +164,7 @@ window.addEventListener('load', function() {
   
   //setup Vue that displays and tracks the BOP state.
   window.BOPVue = createBOPVue();
+
   window.eventLogVue = createEventLogVue();
   
   //interval to keep BOP updated
@@ -185,7 +183,6 @@ window.addEventListener('load', function() {
   
   prepareWeb3();
 });
-
 //BOP contract method calls
 
 function web3CallbackLogIfError(err, res) {
