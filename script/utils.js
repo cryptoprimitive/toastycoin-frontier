@@ -36,7 +36,7 @@ function prepareWeb3() {
             $('#web3LockedWarning').show();
         } else {
             $('#web3LockedWarning').hide();
-            web3.eth.createDefaultProvidertAccount = web3.eth.accounts[0];
+            web3.eth.defaultAccount = web3.eth.accounts[0];
             clearInterval(accountIntervalID);
         }
     }, 250)
