@@ -7,12 +7,15 @@ function handleNewBOPResult(err, res) {
     window.createResultListVue.newResult(res);
   }
 }
+
 function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement) {
     var valueInWei = web3.toWei(valueInEth, 'ether');
     var serviceDepositInWei = web3.toWei(serviceDepositInEth, 'ether');
     var autoreleaseIntervalInSeconds = autoreleaseIntervalInDays*24*60*60;
 
-    BOPFactory.contractInstance.newBurnableOpenPayment(payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, {'value': valueInWei, 'gas': 1500000}, handleNewBOPResult);
+    BOPFactory.contractInstance
+    .newBurnableOpenPayment(payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
+      {'value': valueInWei, 'gas': 1500000}, handleNewBOPResult);
 }
 
 function newBOPFromForm() {
