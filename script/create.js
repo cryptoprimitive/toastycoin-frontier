@@ -19,20 +19,20 @@ function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalI
 }
 
 function newBOPFromForm() {
-  var valueInEth = $("#NewBOPForm #paymentAmountInput").val();
+  var valueInEth = $("#payerForm #paymentAmountInput").val();
   if (valueInEth == '') {
     alert("Must specify payment amount!");
     return;
   }
   valueInEth = Number(valueInEth);
 
-  var payer = $("#NewBOPForm #payerInput").val();
+  var payer = $("#payerForm #payerInput").val();
   if (payer == '') {
     alert("Must specify payer!");
     return;
   }
 
-  var serviceDepositInEth = $("#NewBOPForm #serviceDepositInput").val();
+  var serviceDepositInEth = $("#payerForm #serviceDepositInput").val();
   console.log(serviceDepositInEth);
   if (serviceDepositInEth == '') {
     alert("Must specify commit threshold!");
@@ -40,20 +40,20 @@ function newBOPFromForm() {
   }
   serviceDepositInEth = Number(serviceDepositInEth);
 
-  var autoreleaseIntervalInDays = $("#NewBOPForm #autoreleaseTimerInput").val();
+  var autoreleaseIntervalInDays = $("#payerForm #autoreleaseTimerInput").val();
   if (autoreleaseIntervalInDays == '') {
     alert("Must specify a default timeout length!");
     return;
   }
   autoreleaseIntervalInDays = Number(autoreleaseIntervalInDays);
 
-  var title = $("#NewBOPForm #titleInput").val();
+  var title = $("#payerForm #titleInput").val();
   if (title == '') {
     alert("BP must have a title!");
     return;
   }
   
-  var initialPayerStatement = $("#NewBOPForm #initialStatementInput").val();
+  var initialPayerStatement = $("#payerForm #initialStatementInput").val();
   if (initialPayerStatement == '') {
     if (!confirm("Initial payer statement is empty! Are you sure you want to open a BP without an initial statement?")) {
       return;
@@ -63,10 +63,22 @@ function newBOPFromForm() {
   callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement);
 }
 
+function showPayer() {
+  $("#payerInputLabel").html("Payer address"); 
+}
+
+function showWorker() {
+  $("#payerInputLabel").html("Worker address"); 
+}
+
 function populatePayerInputFromMetamask() {
   if ($("#payerInput").val() == "") {
     $("#payerInput").val(web3.eth.defaultAccount)
   }
+}
+
+function precise(elem) {
+  elem.value = Number(elem.value).toFixed(18);
 }
 
 function updateLengthChecker() {
@@ -136,5 +148,9 @@ window.addEventListener('load', function() {
   
   $('[data-toggle="popover"]').popover();
   
+  $(".btn-group > .btn").click(function(){
+    $(this).addClass("active").siblings().removeClass("active");
+  });
+
   prepareWeb3();
 });
