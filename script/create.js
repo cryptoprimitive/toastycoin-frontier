@@ -14,7 +14,7 @@ function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalI
     var autoreleaseIntervalInSeconds = autoreleaseIntervalInDays*24*60*60;
 
     BOPFactory.contractInstance
-    .newBurnableOpenPayment(true, payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
+    .newBP(true, payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
       {'value': valueInWei, 'gas': 1500000}, handleNewBOPResult);
 }
 
