@@ -21,8 +21,8 @@ function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalI
 
 function newBOPFromForm() {
   
-  var isPayer = $("#payerInputLabel").val() == "Payer address";
-  
+  var isPayer = $("#payerInputLabel").html() == "Payer address";
+
   var valueInEth = $("#payerForm #paymentAmountInput").val();
   if (valueInEth == '') {
     alert("Must specify payment amount!");
@@ -63,7 +63,7 @@ function newBOPFromForm() {
       return;
     }
   }
-  
+
   callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer);
 }
 
