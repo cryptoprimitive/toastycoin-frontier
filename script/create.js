@@ -12,10 +12,12 @@ function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalI
     var valueInWei = web3.toWei(valueInEth, 'ether');
     var serviceDepositInWei = web3.toWei(serviceDepositInEth, 'ether');
     var autoreleaseIntervalInSeconds = autoreleaseIntervalInDays*24*60*60;
+    var isPayer = $("#payerInputLabel").val() == "Payer address";
+    var depositAmount = isPayer ? valueInWei : serviceDepositInWei;
 
     BOPFactory.contractInstance
-    .newBP(true, payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
-      {'value': valueInWei, 'gas': 1500000}, handleNewBOPResult);
+    .newBP(isPayer, payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
+      {'value': depositAmount, 'gas': 1500000}, handleNewBOPResult);
 }
 
 function newBOPFromForm() {
@@ -63,6 +65,7 @@ function newBOPFromForm() {
   callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement);
 }
 
+
 function showPayer() {
   $("#payerInputLabel").html("Payer address"); 
 }
@@ -75,10 +78,6 @@ function populatePayerInputFromMetamask() {
   if ($("#payerInput").val() == "") {
     $("#payerInput").val(web3.eth.defaultAccount)
   }
-}
-
-function precise(elem) {
-  elem.value = Number(elem.value).toFixed(18);
 }
 
 function updateLengthChecker() {
