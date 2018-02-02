@@ -59,7 +59,7 @@ contract BurnablePaymentFactory {
 	returns (address newBPAddr) 
 	{
 		//pass along any ether to the constructor
-		newBPAddr = (new BurnablePayment).value(msg.value)(true, creator, commitThreshold, autoreleaseInterval, title, initialStatement);
+		newBPAddr = (new BurnablePayment).value(msg.value)(payerOpened, creator, commitThreshold, autoreleaseInterval, title, initialStatement);
 		NewBurnablePayment(newBPAddr, payerOpened, creator, msg.value, commitThreshold, autoreleaseInterval, title, initialStatement);
 
 		BPs.push(newBPAddr);
@@ -186,14 +186,19 @@ contract BurnablePayment {
 		commitThreshold = _commitThreshold;
 		autoreleaseInterval = _autoreleaseInterval;
 
-		if (bytes(initialStatement).length > 0)
-		    PayerStatement(initialStatement);
+		if (bytes(initialStatement).length > 0) {
+			if (_payerIsOpening) {
+		    	PayerStatement(initialStatement);
+			} else {
+		    	WorkerStatement(initialStatement);				
+			}
+		}
 	}
 
 	function addFunds()
 	public
 	payable
-	onlyPayerOrWorker() 
+	onlyPayerOrWorker()
 	{
 		require(msg.value > 0);
 
@@ -207,7 +212,7 @@ contract BurnablePayment {
 
 	function recoverFunds()
 	public
-	onlyCreatorWhileOpen() 
+	onlyCreatorWhileOpen()
 	{
 	    recovered = true;
 		FundsRecovered();
