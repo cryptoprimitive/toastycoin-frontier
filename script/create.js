@@ -10,12 +10,13 @@ function handleNewBOPResult(err, res) {
 
 function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer) {
     var valueInWei = web3.toWei(valueInEth, 'ether');
-    var serviceDepositInWei = web3.toWei(serviceDepositInEth, 'ether');
+    var serviceDepositInWei =web3.toWei(serviceDepositInEth, 'ether'); 
+    var commitThreshold = isPayer ? serviceDepositInWei : valueInWei;
     var autoreleaseIntervalInSeconds = autoreleaseIntervalInDays*24*60*60;
     var depositAmount = isPayer ? valueInWei : serviceDepositInWei;
-
+    
     BOPFactory.contractInstance
-    .newBP(isPayer, payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
+    .newBP(isPayer, payer, commitThreshold, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
       {'value': depositAmount, 'gas': 1500000}, handleNewBOPResult);
 }
 

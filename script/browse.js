@@ -6,7 +6,7 @@ function processAndAddBOP(address, state) {
     worker: state[2].toString(),
     title: truncateTitleIfTooLong(xssFilters.inHTMLData(state[3].toString())),
     balance: new web3.BigNumber(state[4]),
-    serviceDeposit: new web3.BigNumber(state[5]),
+    commitThreshold: new web3.BigNumber(state[5]),
     amountDeposited: new web3.BigNumber(state[6]),
     amountBurned: new web3.BigNumber(state[7]),
     amountReleased: new web3.BigNumber(state[8]),
