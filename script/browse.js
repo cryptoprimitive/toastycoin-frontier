@@ -1,10 +1,10 @@
 function processAndAddBOP(address, state) {
   var BOP = {
     address: address,
-    payer: state[0].toString(),
-    title: truncateTitleIfTooLong(xssFilters.inHTMLData(state[1].toString())),
-    state: new web3.BigNumber(state[2]),
-    worker: state[3].toString(),
+    state: state[0].toString(),
+    payer: state[1].toString(),
+    worker: state[2].toString(),
+    title: truncateTitleIfTooLong(xssFilters.inHTMLData(state[3].toString())),
     balance: new web3.BigNumber(state[4]),
     serviceDeposit: new web3.BigNumber(state[5]),
     amountDeposited: new web3.BigNumber(state[6]),
@@ -29,7 +29,7 @@ function fetchAllBOPs() {
   var BOPContract = web3.eth.contract(BOP_ABI);
   
   //Find number of BOPs stored in Factory "BOPs" array
-  BOPFactory.contractInstance.getBOPCount(function(err,res){
+  BOPFactory.contractInstance.getBPCount(function(err,res){
     if (err) {
       console.log("Error calling BP method: " + err.message);
     }
@@ -39,7 +39,7 @@ function fetchAllBOPs() {
       //Now we have the BOP count. Iterate through and get address and info for each BOP.
       var BOPs = [];
       for (var i=0; i<numBOPs; i++) {
-        BOPFactory.contractInstance.BOPs(i, function(err, res) {
+        BOPFactory.contractInstance.BPs(i, function(err, res) {
           if (err) {
             console.log("Error calling BP method: " + err.message);
           }

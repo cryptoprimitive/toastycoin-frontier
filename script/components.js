@@ -43,18 +43,22 @@ Vue.component('bop-state-output', {
   computed: {
     formattedState: function() {
       if (this.state == 0)
-        return "Open";
+        return "PayerOpened";
       else if (this.state == 1)
-        return "Committed";
+          return "WorkerOpened";
       else if (this.state == 2)
+        return "Committed";
+      else if (this.state == 3)
         return "Closed";
     },
     color: function() {
       if (this.state == 0)
         return "#ccffcc";
       else if (this.state == 1)
-        return "cyan";
+          return "#ccffcc";
       else if (this.state == 2)
+        return "cyan";
+      else if (this.state == 3)
         return "#aaaaaa";
     }
   },
@@ -128,13 +132,13 @@ Vue.component('autorelease-output', {
       this.now = Math.floor(Date.now()/1000);
       
       //determine display state
-      if (this.state == 0 || this.state == 2) {
+      if (this.state == 0 || this.state == 3 || this.state == 1) {
         this.displayState = 'interval';
       }
-      else if (this.state == 1 && this.autoreleaseTime > this.now) {
+      else if (this.state == 2 && this.autoreleaseTime > this.now) {
         this.displayState = 'countdown';
       }
-      else if (this.state == 1 && this.autoreleaseTime <= this.now) {
+      else if (this.state == 2 && this.autoreleaseTime <= this.now) {
         this.displayState = 'countdownDone';
       }
     }

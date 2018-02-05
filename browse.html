@@ -79,16 +79,20 @@
             </td>
             <td>
               <div v-if="BOP.state == 0">
-                Balance: <ether-output :wei=BOP.balance></ether-output><br>
-                Service Deposit: <ether-output :wei=BOP.serviceDeposit></ether-output>
+                Payment Amount: <ether-output :wei=BOP.balance></ether-output><br>
+                Service Deposit Required: <ether-output :wei=BOP.serviceDeposit></ether-output>
               </div>
               <div v-if="BOP.state == 1">
+                Contract Balance: <ether-output :wei=BOP.balance></ether-output><br>
+                Service Deposit: <ether-output :wei=BOP.serviceDeposit></ether-output>
+              </div>
+              <div v-if="BOP.state == 2">
                 Deposited: <ether-output :wei=BOP.amountDeposited></ether-output><br>
                 Balance: <ether-output :wei=BOP.balance></ether-output><br>
                 Released: <ether-output :wei=BOP.amountReleased></ether-output><br>
                 Burned: <ether-output :wei=BOP.amountBurned></ether-output>
               </div>
-              <div v-if="BOP.state == 2">
+              <div v-if="BOP.state == 3">
                 Released: <ether-output :wei=BOP.amountReleased></ether-output><br>
                 Burned: <ether-output :wei=BOP.amountBurned></ether-output>
               </div>
