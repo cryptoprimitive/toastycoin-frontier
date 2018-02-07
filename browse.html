@@ -79,7 +79,7 @@
             </td>
             <td>
               <div v-if="BOP.state == 0">
-                Payment Amount: <ether-output :wei=BOP.balance></ether-output><br>
+                Deposited Payment Amount: <ether-output :wei=BOP.balance></ether-output><br>
                 Service Deposit Required: <ether-output :wei=BOP.commitThreshold></ether-output>
               </div>
               <div v-if="BOP.state == 1">
