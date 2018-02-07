@@ -6,12 +6,12 @@ Later on in development, the project could be expanded to interact with other co
 
 # Usage
 
-Simply navigate to www.toastycoin.com or https://coinop-logan.github.io if you have Metamask or another web3 provider.
+Simply navigate to www.toastycoin.com or https://cryptoprimitive.github.io/toastycoin-frontier if you have Metamask or another web3 provider.
 
 ## Installation
 If you'd like to run the Toastycoin Frontier code locally, run a (local) webserver and ensure you have access to an Ethereum node, then download and unzip or clone the repository files into a directory accessible to the webserver.
 ```
-git clone https://github.com/coinop-logan/coinop-logan.github.io
+git clone https://github.com/cryptoprimitive/toastycoin-frontier
 ```
 
 See also the alternative interface, "Toastycoin Beta". https://github.com/gianlucaschoefer/gianlucaschoefer.github.com
