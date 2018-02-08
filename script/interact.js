@@ -12,14 +12,14 @@ function markBOPVerified(flag) {
 
 function verifyAddressIsBOP() {
   markBOPVerified(false);
-  window.BOPFactory.contractInstance.getBOPCount(function(err, res) {
+  window.BOPFactory.contractInstance.getBPCount(function(err, res) {
     if (err) {
         console.log("Error calling BP method: " + err.message);
     }
     else {
       var numBOPs = Number(res);
       for (var i = 0; i < numBOPs; i++) {
-        BOPFactory.contractInstance.BOPs(i, function(err, res) {
+        BOPFactory.contractInstance.BPs(i, function(err, res) {
           if (err) {
               console.log("Error calling BP method: " + err.message);
           }
@@ -51,7 +51,7 @@ function createBOPVue() {
         state: 0,
         worker: "[loading]",
         balance: 0,
-        serviceDeposit: 0,
+        commitThreshold: 0,
         amountDeposited: 0,
         amountBurned: 0,
         amountReleased: 0,
@@ -92,19 +92,19 @@ function createBOPVue() {
           }
         });
       },
+      //(0-state, 1-payer, 2-worker, 3-title, 4-balance, 5-commitThreshold, 6-amountDeposited, 7-amountBurned, 8-amountReleased, 9-autoreleaseInterval, 10-autoreleaseTime);
       updateBOPState: function(getStateResult) {
-        this.BOP.payer = getStateResult[0].toString();
-        this.BOP.title = xssFilters.inHTMLData(getStateResult[1].toString());
-        this.BOP.title = truncateTitleIfTooLong(this.BOP.title);
-        this.BOP.state = new web3.BigNumber(getStateResult[2].toString());
-        this.BOP.worker = getStateResult[3].toString();
+        this.BOP.state = getStateResult[0].toString();
+        this.BOP.payer = getStateResult[1].toString();
+        this.BOP.worker = getStateResult[2].toString();
+        this.BOP.title = truncateTitleIfTooLong(xssFilters.inHTMLData(getStateResult[3].toString()));
         this.BOP.balance = new web3.BigNumber(getStateResult[4].toString());
-        this.BOP.serviceDeposit = getStateResult[5].toString();
+        this.BOP.commitThreshold = new web3.BigNumber(getStateResult[5].toString())
         this.BOP.amountDeposited = new web3.BigNumber(getStateResult[6].toString());
         this.BOP.amountBurned = new web3.BigNumber(getStateResult[7].toString());
         this.BOP.amountReleased = new web3.BigNumber(getStateResult[8].toString());
         this.BOP.autoreleaseInterval = new web3.BigNumber(getStateResult[9].toString());
-        this.BOP.autoreleaseTime = new web3.BigNumber(getStateResult[10].toString());
+        this.BOP.autoreleaseTime = new web3.BigNumber(getStateResult[10].toString());  
       }
     },
     computed: {
@@ -190,7 +190,7 @@ function web3CallbackLogIfError(err, res) {
 }
 
 function callCommit() {
-  BOPVue.BOP.contractInstance.commit({'value':BOPVue.BOP.serviceDeposit}, web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.commit({'value':BOPVue.BOP.commitThreshold}, web3CallbackLogIfError);
 }
 
 function callRelease(amountInWei) {

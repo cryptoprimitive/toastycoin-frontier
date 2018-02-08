@@ -58,48 +58,57 @@
             <bop-state-output :state=BOP.state></bop-state-output>
           </div>
           <div class="col-sm-3">
-            <div v-if="BOP.state == 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ffdd99">
+            <div v-if="BOP.state == 0 || BOP.state == 1" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ffdd99">
               Auto-release:<br>
               <duration-output :seconds=BOP.autoreleaseInterval></duration-output>
             </div>
-            <div v-else-if="BOP.state == 1 && secondsUntilAutorelease >= 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ffdd99">
+            <div v-else-if="BOP.state == 2 && secondsUntilAutorelease >= 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ffdd99">
               Auto-release in:<br>
               <duration-output :seconds=secondsUntilAutorelease></duration-output>
             </div>
-            <div v-else-if="BOP.state == 1 && secondsUntilAutorelease < 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ccffcc">
+            <div v-else-if="BOP.state == 2 && secondsUntilAutorelease < 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ccffcc">
               <button v-if="userIsWorker" class="btn btn-info" type="button" onclick="triggerAutorelease()">Trigger Autorelease</button>
               <div v-else>The worker can now trigger the auto-release!</div>
             </div>
-            <button v-if="BOP.state == 1 && userIsPayer" class="btn btn-info" type="button" onclick="delayAutorelease()">Delay</button>
+            <button v-if="BOP.state == 2 && userIsPayer" class="btn btn-info" type="button" onclick="delayAutorelease()">Delay</button>
             
           </div>
           <div class="col-sm-1"></div>
         </div>
         <div class="row">
           <div class="col-sm-3">
-            <div class="well well-sm" style="background-color:#bbffff;display:inline-block">
+            <div v-if="BOP.state != 1" class="well well-sm" style="background-color:#bbffff;display:inline-block">
               <b>Payer:</b><br>
               <eth-address-output :address=BOP.payer></eth-address-output>
             </div>
           </div>
           <div class="col-sm-6">
             <div class="row">
-              <div class="col-xs-4" style="text-align:left">
+              <div v-if="BOP.state != 1" class="col-xs-4" style="text-align:left">
                 <img class="img-responsive" style="min-width:9rem;width:9rem;" src="resources/arrow_deposit.png">
                 <div style="position:relative;left:1rem;top:-2.2rem"><ether-output :wei=BOP.amountDeposited></ether-output></div>
                 <div style="position:relative;left:1rem;top:-2.2rem">funded</div><br>
                 <button v-if="userIsPayer" type="button" class="btn btn-success" data-toggle="modal" data-target="#addfunds-modal">Add Funds</button>
+              </div>
+              <div v-if="BOP.state == 1" class="well class col-xs-4" style="background-color:#bbffff;display:inline-block">
+                <font style="font-size:1.2rem">
+                  Payment Required:<br>
+                </font>
+                <font style="font-size:1.5rem">
+                  <ether-output :wei=BOP.commitThreshold></ether-output>
+                </font><br>
+                <button class="btn btn-lg btn-warning" onClick="callCommit()">Commit</button>
               </div>
               <div class="col-xs-4">
                 <div class="well" style="background-color:#ccffcc;margin-bottom:2px">
                   <font style="font-size:2rem"><ether-output :wei=BOP.balance></ether-output></font><br>
                   held in BP
                 </div>
-                <div v-if="BOP.state == 1 && userIsPayer" class="btn-group" style="display:flex">
+                <div v-if="BOP.state == 2 && userIsPayer" class="btn-group" style="display:flex">
                   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#release-modal">Release</button>
                   <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#burn-modal">Burn</button>
                 </div>
-                <button v-if="BOP.state == 0 && userIsPayer" class="btn btn-danger" onClick="callRecoverFunds()">Cancel BP<br>(recover funds)</button>
+                <button v-if="(BOP.state == 0 && userIsPayer) || (BOP.state == 1 && userIsWorker)" class="btn btn-danger" onClick="callRecoverFunds()">Cancel BP<br>(recover funds)</button>
               </div>
               <div class="col-xs-4">
                 <div v-if="BOP.state == 0" class="well" style="background-color:#bbffff;display:inline-block">
@@ -107,11 +116,11 @@
                     Service Deposit:<br>
                   </font>
                   <font style="font-size:1.5rem">
-                    <ether-output :wei=BOP.serviceDeposit></ether-output>
+                    <ether-output :wei=BOP.commitThreshold></ether-output>
                   </font><br>
                   <button class="btn btn-lg btn-warning" onClick="callCommit()">Commit</button>
                 </div>
-                <div v-if="BOP.state != 0" style="text-align:left">
+                <div v-if="BOP.state != 0 && BOP.state != 1" style="text-align:left">
                   <img class="img-responsive" style="min-width:9rem;width:9rem;" src="resources/arrow_release.png">
                   <div style="position:relative;left:1rem;top:-2.2rem"><ether-output :wei=BOP.amountReleased></ether-output></div>
                   <div style="position:relative;left:1rem;top:-2.2rem">released</div>
@@ -135,7 +144,7 @@
             <div class="form-group">
               <textarea id="statement-input" class="form-control" rows="3"></textarea>
               <div v-if="userIsPayer" align='left'><button type="button" class="btn btn-primary" onClick="logPayerStatementFromForm()">Log Payer Statement</button></div>
-              <div v-else-if="userIsWorker" align='right'><button type="button" class="btn btn-primary" onClick="logWorkerStatementFromForm()">Log Worker Statement</button></div>
+              <div v-if="userIsWorker" align='right'><button type="button" class="btn btn-primary" onClick="logWorkerStatementFromForm()">Log Worker Statement</button></div>
             </div>
           </div>
         </div>
