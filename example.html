@@ -16,15 +16,15 @@
 <div class="container">
   <div class="well" style="font-size:1.8rem">
     <div class="alert alert-info">
-      <p>Note: the images in this page are a bit out of date; they refer to Burnable Payments as "BOPs" and show a slightly different interface.</p>
+      <p>Note: the images in this page are a bit out of date; they refer to Burnable Payments as "BPs" and show a slightly different interface.</p>
       <p>Aside from these superficial discrepancies, the information below remains accurate.</p>
     </div>
-    <p>Programmers are invited to follow along in the <a href="https://github.com/coinop-logan/coinop-logan.github.io/blob/master/BOP.sol">full Burnable Payment source code</a>, but the leading comments in the source code sum up the basic rules:</p>
+    <p>Programmers are invited to follow along in the <a href="https://github.com/coinop-logan/coinop-logan.github.io/blob/master/BP.sol">full Burnable Payment source code</a>, but the leading comments in the source code sum up the basic rules:</p>
     <pre>...
 //In the Open state,
 //Payer can logPayerStatement() to add additional details, clarifications, or corrections.
 //Anyone can become the Worker by contributing the serviceDeposit with commit();
-//this changes the state from Open to Committed. The BOP will never return to the Open state.
+//this changes the state from Open to Committed. The BP will never return to the Open state.
 //After this state change, Worker will never be changed.
 //In the Committed state,
 //AutoreleaseTime is set to (now + autoreleaseInterval).
@@ -40,7 +40,7 @@
     <h1>A Simple Example</h1>
     <p>Let's imagine the payer needs a transcript written for an audio recording. He is willing to pay 0.5 ETH for the service, and sets a <i>service deposit</i> of 0.1 ETH. He also sets an <i>autorelease timer</i>, which is explained later.</p>
     <center><img src="https://i.imgur.com/VWYSMav.png"></center>
-    <p>For more guidance on what values to choose, see <a href="http://toastycoin.com/creatingbops.html">Creating Effective BPs</a>. This page is more of an overview of the entire life cycle of a BP.</p>
+    <p>For more guidance on what values to choose, see <a href="http://toastycoin.com/creatingbps.html">Creating Effective BPs</a>. This page is more of an overview of the entire life cycle of a BP.</p>
     <p>After clicking "Create BP," it will be created within the next few Ethereum blocks and will be publicly viewable via the interact page:</p>
     <center><img class="img-responsive" src="https://i.imgur.com/YDtQSI5.png"></center>
     <p>The above image shows the payer's view of the BP. Other users don't see the "recover" button or the payer statement input form at the bottom.</p>
@@ -58,7 +58,7 @@
     <p>If the worker provides the transcription, the payer can release the payment. If not, the payer can burn it. Once the entire payment has been either burned or released, the BP moves to its final state, "Closed."</p>
     <center><img class="img-responsive" src="https://i.imgur.com/s57yVSi.png"></center>
     <hr>
-    <p>BPs utilize game theory to strongly guarantee the following, assuming <a href="http://toastycoin.com/creatingbops.html">an appropriate service deposit is set</a>:</p>
+    <p>BPs utilize game theory to strongly guarantee the following, assuming <a href="http://toastycoin.com/creatingbps.html">an appropriate service deposit is set</a>:</p>
     <ul>
       <li>Payers unwilling to pay for the job will never open a BP in the first place; therefore, each Open BP represents a legitimate opportunity for some capable worker to earn the payment.</li>
       <li>A payer will only release the payment if the worker completes the job, otherwise the payer will burn it.</li>

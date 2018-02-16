@@ -38,7 +38,7 @@ Vue.component('ether-output', {
   template: "<span>{{formatted}}</span>"
 });
 
-Vue.component('bop-state-output', {
+Vue.component('bp-state-output', {
   props: ['state'],
   computed: {
     formattedState: function() {
@@ -74,7 +74,7 @@ Vue.component('create-result-row', {
   },
   template:
 `<div v-if="!(this.result.mined)">Waiting for transaction to be mined: <a target="_blank" :href="this.etherscanURL + 'tx/' + this.result.txHash">{{result.txHash}}</a></div>
-<div v-else><a target="_blank" :href="'interact.html?address=' + this.result.BOPAddress">BP created!</a></div>
+<div v-else><a target="_blank" :href="'interact.html?address=' + this.result.BPAddress">BP created!</a></div>
 `
 });
 
@@ -92,7 +92,7 @@ Vue.component('blocknum-output', {
   template: `<span style="font-size:0.7rem">@block {{formattedBlocknum}} (~{{formattedTimestamp}})</span>`
 });
 
-Vue.component('bop-event-row', {
+Vue.component('bp-event-row', {
   props: ['event'],
   computed: {
     formattedPayerStatement: function() {
@@ -102,7 +102,7 @@ Vue.component('bop-event-row', {
       return "Worker Statement<br><div class='well well-sm' style='margin-bottom:0;background-color:#aaffff'>"+xssFilters.inHTMLData(this.event.args.statement).replace(/(?:\r\n|\r|\n)/g, '<br />') + "</div>";
     },
     formattedCommit: function() {
-      return (  BOPVue.BOP.payer == this.event.args.committer) ? '<span>Payer committed to the BP</span>' : '<span>Worker committed to the BP<span>';
+      return (  BPVue.BP.payer == this.event.args.committer) ? '<span>Payer committed to the BP</span>' : '<span>Worker committed to the BP<span>';
     }
   },
   template:

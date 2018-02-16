@@ -1,6 +1,6 @@
 function onWeb3Ready() {}
 
-function handleNewBOPResult(err, res) {
+function handleNewBPResult(err, res) {
   if (err) alert(err.message);
   else {
     console.log(res);
@@ -8,19 +8,19 @@ function handleNewBOPResult(err, res) {
   }
 }
 
-function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer) {
+function callNewBP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer) {
     var valueInWei = web3.toWei(valueInEth, 'ether');
     var serviceDepositInWei =web3.toWei(serviceDepositInEth, 'ether'); 
     var commitThreshold = isPayer ? serviceDepositInWei : valueInWei;
     var autoreleaseIntervalInSeconds = autoreleaseIntervalInDays*24*60*60;
     var depositAmount = isPayer ? valueInWei : serviceDepositInWei;
     
-    BOPFactory.contractInstance
+    BPFactory.contractInstance
     .newBP(isPayer, payer, commitThreshold, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
-      {'value': depositAmount, 'gas': 1500000}, handleNewBOPResult);
+      {'value': depositAmount, 'gas': 1500000}, handleNewBPResult);
 }
 
-function newBOPFromForm() {
+function newBPFromForm() {
   
   var isPayer = $("#payerInputLabel").html() == "Payer address";
 
@@ -65,7 +65,7 @@ function newBOPFromForm() {
     }
   }
 
-  callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer);
+  callNewBP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer);
 }
 
 
@@ -105,7 +105,7 @@ function createCreateResultListVue() {
         this.createResults.push({
           txHash: txHash,
           mined: false,
-          BOPAddress: null
+          BPAddress: null
         });
       },
       createTxMined(txReceipt) {
@@ -114,7 +114,7 @@ function createCreateResultListVue() {
           if (this.createResults[i].txHash == txHash) {
             this.createResults[i].mined = true;
             console.log(txReceipt);
-            this.createResults[i].BOPAddress = txReceipt.logs[0].address;
+            this.createResults[i].BPAddress = txReceipt.logs[0].address;
             break;
           }
         }

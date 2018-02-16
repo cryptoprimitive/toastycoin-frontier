@@ -1,9 +1,9 @@
 const FILTER_START_BLOCK_ROPSTEN = 2557857; //1941956 set to the earliest block either one of the factory contracts was created on
 const FILTER_START_BLOCK = 4435671;
-const BOP_FACTORY_ADDRESS = "0x38B394cD27C3b0D865F58a4512b65c7b0ab6DB66";
-const BOP_FACTORY_ADDRESS_ROPSTEN = "0x05C022738bfe621159Bf19e7fcD442C546c47317"; //"0xA981e23E9Ff17357dE2a13a9CA36E728322016f0";
-const BOP_ADDRESS_ROPSTEN = "0xd2e82c537f9fd13bc4d3e26d684af703aa8df1a2";
-const BOP_FACTORY_ABI = [
+const BP_FACTORY_ADDRESS = "0x38B394cD27C3b0D865F58a4512b65c7b0ab6DB66";
+const BP_FACTORY_ADDRESS_ROPSTEN = "0x05C022738bfe621159Bf19e7fcD442C546c47317"; //"0xA981e23E9Ff17357dE2a13a9CA36E728322016f0";
+const BP_ADDRESS_ROPSTEN = "0xd2e82c537f9fd13bc4d3e26d684af703aa8df1a2";
+const BP_FACTORY_ABI = [
 	{
 		"constant": true,
 		"inputs": [
@@ -125,7 +125,7 @@ const BOP_FACTORY_ABI = [
 	}
 ];
 
-const BOP_ABI = [
+const BP_ABI = [
 	{
 		"constant": true,
 		"inputs": [],

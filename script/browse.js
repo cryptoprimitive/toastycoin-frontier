@@ -1,5 +1,5 @@
-function processAndAddBOP(address, state) {
-  var BOP = {
+function processAndAddBP(address, state) {
+  var BP = {
     address: address,
     state: state[0].toString(),
     payer: state[1].toString(),
@@ -13,58 +13,58 @@ function processAndAddBOP(address, state) {
     autoreleaseInterval: new web3.BigNumber(state[9]),
     autoreleaseTime: new web3.BigNumber(state[10])
   };
-  browseVue.pushBOPAndSort(BOP);
+  browseVue.pushBPAndSort(BP);
 }
 
 function applyNewCompareCode() {
   browseVue.compareCode = $("#compare-code-input").val();
-  browseVue.sortBOPs();
+  browseVue.sortBPs();
 }
 
-//Here we use an array in the factory to track BOPs. We could filter for newBOP events instead
+//Here we use an array in the factory to track BPs. We could filter for newBP events instead
 //but this has proved unreliable in the past, so I'm hesitant to rely on it.
 //See https://github.com/MetaMask/metamask-extension/issues/2114
-function fetchAllBOPs() {
-  //Create a BOP contract; later this will be called with each BOP's address to make a contractInstance
-  var BOPContract = web3.eth.contract(BOP_ABI);
+function fetchAllBPs() {
+  //Create a BP contract; later this will be called with each BP's address to make a contractInstance
+  var BPContract = web3.eth.contract(BP_ABI);
   
-  //Find number of BOPs stored in Factory "BOPs" array
-  BOPFactory.contractInstance.getBPCount(function(err,res){
+  //Find number of BPs stored in Factory "BPs" array
+  BPFactory.contractInstance.getBPCount(function(err,res){
     if (err) {
       console.log("Error calling BP method: " + err.message);
     }
     else {
       console.log(res);
-      var numBOPs = new web3.BigNumber(res);
-      //Now we have the BOP count. Iterate through and get address and info for each BOP.
-      var BOPs = [];
-      for (var i=0; i<numBOPs; i++) {
-        BOPFactory.contractInstance.BPs(i, function(err, res) {
+      var numBPs = new web3.BigNumber(res);
+      //Now we have the BP count. Iterate through and get address and info for each BP.
+      var BPs = [];
+      for (var i=0; i<numBPs; i++) {
+        BPFactory.contractInstance.BPs(i, function(err, res) {
           if (err) {
             console.log("Error calling BP method: " + err.message);
           }
           else{
-            var BOPAddress = res;
-            //With the address, we can now instantiate a contractInstance for the BOP and call getFullState.
-            (function(BOPAddress) {
-              web3.eth.getCode(BOPAddress, function(err, res){
+            var BPAddress = res;
+            //With the address, we can now instantiate a contractInstance for the BP and call getFullState.
+            (function(BPAddress) {
+              web3.eth.getCode(BPAddress, function(err, res){
                 if(err) {
                   console.log("Error calling BP method: " + err.message);
                 }
-                else if(res !== "0x") {//Ignore all BOPs that have been recoverFunds'd (suicided)
-                  var BOPContractInstance = BOPContract.at(BOPAddress);
-                  BOPContractInstance.getFullState(function(err, res) {
+                else if(res !== "0x") {//Ignore all BPs that have been recoverFunds'd (suicided)
+                  var BPContractInstance = BPContract.at(BPAddress);
+                  BPContractInstance.getFullState(function(err, res) {
                     if(err) {
                       console.log("Error calling BP method: " + err.message);
                     }
                     else {
-                      var BOPFullState = res;
-                      processAndAddBOP(BOPAddress, BOPFullState);
+                      var BPFullState = res;
+                      processAndAddBP(BPAddress, BPFullState);
                     }
                   });
                 }
               });
-            })(BOPAddress);
+            })(BPAddress);
           }
         });
       }
@@ -76,7 +76,7 @@ function createBrowseVue() {
   return new Vue({
     el: "#browseVue",
     data: {
-      BOPs: [],
+      BPs: [],
       intervalHandle: null,
       compareCode:
 `// Sort by balance, descending
@@ -101,12 +101,12 @@ compareResult = b.balance - a.balance
       goToInteractPage: function(address) {
         window.open("interact.html?address=" + address, '_blank');
       },
-      pushBOPAndSort: function(BOP) {
-        this.BOPs.push(BOP);
-        this.sortBOPs();
+      pushBPAndSort: function(BP) {
+        this.BPs.push(BP);
+        this.sortBPs();
       },
-      sortBOPs: function() {
-        this.BOPs.sort(function(a, b) {
+      sortBPs: function() {
+        this.BPs.sort(function(a, b) {
           var compareResult;
           eval(browseVue.compareCode);
           return compareResult;
@@ -124,11 +124,11 @@ compareResult = b.balance - a.balance
 }
 
 function onWeb3Ready() {
-  BOPFactory.ABI = BOP_FACTORY_ABI;
-  BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
-  BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
+  BPFactory.ABI = BP_FACTORY_ABI;
+  BPFactory.contract = web3.eth.contract(BPFactory.ABI);
+  BPFactory.contractInstance = BPFactory.contract.at(BPFactory.address);
   
-  fetchAllBOPs();
+  fetchAllBPs();
 }
 
 window.addEventListener('load', function() {
