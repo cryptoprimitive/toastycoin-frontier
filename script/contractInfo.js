@@ -1,9 +1,22 @@
-const FILTER_START_BLOCK_ROPSTEN = 2557857; //1941956 set to the earliest block either one of the factory contracts was created on
-const FILTER_START_BLOCK = 4435671;
-const BP_FACTORY_ADDRESS = "0x38B394cD27C3b0D865F58a4512b65c7b0ab6DB66";
-const BP_FACTORY_ADDRESS_ROPSTEN = "0x05C022738bfe621159Bf19e7fcD442C546c47317"; //"0xA981e23E9Ff17357dE2a13a9CA36E728322016f0";
-const BP_ADDRESS_ROPSTEN = "0xd2e82c537f9fd13bc4d3e26d684af703aa8df1a2";
+const FILTER_START_BLOCK_ROPSTEN = 2681327; //set to the earliest block either one of the factory contracts was created on
+const FILTER_START_BLOCK = 5117163;
+const BP_FACTORY_ADDRESS = "0xa225ebe73347dd87492868332f9b746beb8499bb";
+const BP_FACTORY_ADDRESS_ROPSTEN = "0x182fd601b4058b595b310739c0722b76b2c3459a";
 const BP_FACTORY_ABI = [
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getBPCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
 	{
 		"constant": true,
 		"inputs": [
@@ -17,59 +30,6 @@ const BP_FACTORY_ABI = [
 			{
 				"name": "",
 				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "payerOpened",
-				"type": "bool"
-			},
-			{
-				"name": "creator",
-				"type": "address"
-			},
-			{
-				"name": "commitThreshold",
-				"type": "uint256"
-			},
-			{
-				"name": "autoreleaseInterval",
-				"type": "uint256"
-			},
-			{
-				"name": "title",
-				"type": "string"
-			},
-			{
-				"name": "initialStatement",
-				"type": "string"
-			}
-		],
-		"name": "newBP",
-		"outputs": [
-			{
-				"name": "newBPAddr",
-				"type": "address"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getBPCount",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -122,6 +82,45 @@ const BP_FACTORY_ABI = [
 		],
 		"name": "NewBurnablePayment",
 		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "payerOpened",
+				"type": "bool"
+			},
+			{
+				"name": "creator",
+				"type": "address"
+			},
+			{
+				"name": "commitThreshold",
+				"type": "uint256"
+			},
+			{
+				"name": "autoreleaseInterval",
+				"type": "uint256"
+			},
+			{
+				"name": "title",
+				"type": "string"
+			},
+			{
+				"name": "initialStatement",
+				"type": "string"
+			}
+		],
+		"name": "newBP",
+		"outputs": [
+			{
+				"name": "newBPAddr",
+				"type": "address"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
 	}
 ];
 
@@ -424,7 +423,7 @@ const BP_ABI = [
 	{
 		"inputs": [
 			{
-				"name": "_payerIsOpening",
+				"name": "payerIsOpening",
 				"type": "bool"
 			},
 			{
