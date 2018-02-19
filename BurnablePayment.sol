@@ -34,106 +34,105 @@
 pragma solidity ^ 0.4.2;
 
 contract BurnablePaymentFactory {
-	
-	//contract address array
-	address[]public BPs;
+    
+    //contract address array
+    address[]public BPs;
 
-	event NewBurnablePayment(
-		address indexed bpAddress, 
-		bool payerOpened, 
-		address creator, 
-		uint deposited, 
-		uint commitThreshold, 
-		uint autoreleaseInterval, 
-		string title, 
-		string initialStatement
-	);  
+    event NewBurnablePayment(
+        address indexed bpAddress, 
+        bool payerOpened, 
+        address creator, 
+        uint deposited, 
+        uint commitThreshold, 
+        uint autoreleaseInterval, 
+        string title, 
+        string initialStatement
+    );  
 
-	function newBP(bool payerOpened, address creator, uint commitThreshold, uint autoreleaseInterval, string title, string initialStatement)
-	public
-	payable
-	returns (address newBPAddr) 
-	{
-		//pass along any ether to the constructor
-		newBPAddr = (new BurnablePayment).value(msg.value)(payerOpened, creator, commitThreshold, autoreleaseInterval, title, initialStatement);
-		NewBurnablePayment(newBPAddr, payerOpened, creator, msg.value, commitThreshold, autoreleaseInterval, title, initialStatement);
+    function newBP(bool payerOpened, address creator, uint commitThreshold, uint autoreleaseInterval, string title, string initialStatement)
+    public
+    payable
+    returns (address newBPAddr) 
+    {
+        //pass along any ether to the constructor
+        newBPAddr = (new BurnablePayment).value(msg.value)(payerOpened, creator, commitThreshold, autoreleaseInterval, title, initialStatement);
+        NewBurnablePayment(newBPAddr, payerOpened, creator, msg.value, commitThreshold, autoreleaseInterval, title, initialStatement);
 
-		BPs.push(newBPAddr);
+        BPs.push(newBPAddr);
 
-		return newBPAddr;
-	}
+        return newBPAddr;
+    }
 
-	//JSMIT Moved constant function last - see http://solidity.readthedocs.io/en/develop/style-guide.html#order-of-functions
-	function getBPCount()
-	public
-	constant
-	returns(uint) 
-	{
-		return BPs.length;
-	}
+    function getBPCount()
+    public
+    constant
+    returns(uint) 
+    {
+        return BPs.length;
+    }
 }
 
 contract BurnablePayment {
     //title will never change
     string public title;
     
-	//BP will start with a payer or a worker but not both
-	address public payer;
-	address public worker;
-	address constant BURN_ADDRESS = 0x0;
-	
-	//Set to true if fundsRecovered is called
-	bool recovered = false;
+    //BP will start with a payer or a worker but not both
+    address public payer;
+    address public worker;
+    address constant BURN_ADDRESS = 0x0;
+    
+    //Set to true if fundsRecovered is called
+    bool recovered = false;
 
-	//Note that these will track, but not influence the BP logic.
-	uint public amountDeposited;
-	uint public amountBurned;
-	uint public amountReleased;
+    //Note that these will track, but not influence the BP logic.
+    uint public amountDeposited;
+    uint public amountBurned;
+    uint public amountReleased;
 
-	//Amount of ether that must be deposited via commit() to become the second party of the BP.
-	uint public commitThreshold;
+    //Amount of ether that must be deposited via commit() to become the second party of the BP.
+    uint public commitThreshold;
 
-	//How long should we wait before allowing the default release to be called?
-	uint public autoreleaseInterval;
+    //How long should we wait before allowing the default release to be called?
+    uint public autoreleaseInterval;
 
-	//Calculated from autoreleaseInterval in commit(),
-	//and recaluclated whenever the payer (or possibly the worker) calls delayhasDefaultRelease()
-	//After this time, auto-release can be called by the Worker.
-	uint public autoreleaseTime;
+    //Calculated from autoreleaseInterval in commit(),
+    //and recaluclated whenever the payer (or possibly the worker) calls delayhasDefaultRelease()
+    //After this time, auto-release can be called by the Worker.
+    uint public autoreleaseTime;
 
-	//Most action happens in the Committed state.
-	enum State {
-		PayerOpened,
-		WorkerOpened,
-		Committed,
-		Closed
-	}
+    //Most action happens in the Committed state.
+    enum State {
+        PayerOpened,
+        WorkerOpened,
+        Committed,
+        Closed
+    }
 
-	//Note that a BP cannot go from Committed back to either Open state, but it can go from Closed back to Committed
-	//Search for Closed and Unclosed events to see how this works.
-	State public state;
+    //Note that a BP cannot go from Committed back to either Open state, but it can go from Closed back to Committed
+    //Search for Closed and Unclosed events to see how this works.
+    State public state;
 
-	modifier inState(State s) {
-		require(s == state);
-		_;
-	}
-	modifier inOpenState() {
-	    require(state == State.PayerOpened || state == State.WorkerOpened);
-	    _;
-	}
-	modifier onlyPayer() {
-		require(msg.sender == payer);
-		_;
-	}
-	modifier onlyWorker() {
-		require(msg.sender == worker);
-		_;
-	}
-	modifier onlyPayerOrWorker() {
-		require((msg.sender == payer) || (msg.sender == worker));
-		_;
-	}
-	modifier onlyCreatorWhileOpen() {
+    modifier inState(State s) {
+        require(s == state);
+        _;
+    }
+    modifier inOpenState() {
+        require(state == State.PayerOpened || state == State.WorkerOpened);
+        _;
+    }
+    modifier onlyPayer() {
+        require(msg.sender == payer);
+        _;
+    }
+    modifier onlyWorker() {
+        require(msg.sender == worker);
+        _;
+    }
+    modifier onlyPayerOrWorker() {
+        require((msg.sender == payer) || (msg.sender == worker));
+        _;
+    }
+    modifier onlyCreatorWhileOpen() {
         if (state == State.PayerOpened) {
             require(msg.sender == payer);
         } else if (state == State.WorkerOpened) {
@@ -142,34 +141,34 @@ contract BurnablePayment {
             revert();        
         }
         _;
-	}
+    }
 
-	event Created(address indexed contractAddress, bool payerOpened, address creator, uint commitThreshold, uint autoreleaseInterval, string title);
-	event FundsAdded(address from, uint amount); //The payer has added funds to the BP.
-	event PayerStatement(string statement);
-	event WorkerStatement(string statement);
-	event FundsRecovered();
-	event Committed(address committer);
-	event FundsBurned(uint amount);
-	event FundsReleased(uint amount);
-	event Closed();
-	event Unclosed();
-	event AutoreleaseDelayed();
-	event AutoreleaseTriggered();
+    event Created(address indexed contractAddress, bool payerOpened, address creator, uint commitThreshold, uint autoreleaseInterval, string title);
+    event FundsAdded(address from, uint amount); //The payer has added funds to the BP.
+    event PayerStatement(string statement);
+    event WorkerStatement(string statement);
+    event FundsRecovered();
+    event Committed(address committer);
+    event FundsBurned(uint amount);
+    event FundsReleased(uint amount);
+    event Closed();
+    event Unclosed();
+    event AutoreleaseDelayed();
+    event AutoreleaseTriggered();
 
-	function BurnablePayment(bool payerIsOpening, address creator, uint _commitThreshold, uint _autoreleaseInterval, string _title, string initialStatement)
-	public
-	payable 
-	{
-		Created(this, payerIsOpening, creator, _commitThreshold, autoreleaseInterval, title);
+    function BurnablePayment(bool payerIsOpening, address creator, uint _commitThreshold, uint _autoreleaseInterval, string _title, string initialStatement)
+    public
+    payable 
+    {
+        Created(this, payerIsOpening, creator, _commitThreshold, autoreleaseInterval, title);
 
-		if (msg.value > 0) {
-		    //Here we use tx.origin instead of msg.sender (msg.sender is just the factory contract)
-			FundsAdded(tx.origin, msg.value);
-			amountDeposited += msg.value;
-		}
-		
-		title = _title;
+        if (msg.value > 0) {
+            //Here we use tx.origin instead of msg.sender (msg.sender is just the factory contract)
+            FundsAdded(tx.origin, msg.value);
+            amountDeposited += msg.value;
+        }
+        
+        title = _title;
 
         if (payerIsOpening) {
             state = State.PayerOpened;
@@ -179,151 +178,151 @@ contract BurnablePayment {
             worker = creator;
         }
 
-		commitThreshold = _commitThreshold;
-		autoreleaseInterval = _autoreleaseInterval;
+        commitThreshold = _commitThreshold;
+        autoreleaseInterval = _autoreleaseInterval;
 
-		if (bytes(initialStatement).length > 0) {
-			if (payerIsOpening) {
+        if (bytes(initialStatement).length > 0) {
+            if (payerIsOpening) {
                 PayerStatement(initialStatement);
-			} else {
-                WorkerStatement(initialStatement);				
-			}
-		}
-	}
+            } else {
+                WorkerStatement(initialStatement);              
+            }
+        }
+    }
 
-	function addFunds()
-	public
-	payable
-	onlyPayerOrWorker()
-	{
-		require(msg.value > 0);
+    function addFunds()
+    public
+    payable
+    onlyPayerOrWorker()
+    {
+        require(msg.value > 0);
 
-		FundsAdded(msg.sender, msg.value);
-		amountDeposited += msg.value;
-		if (state == State.Closed) {
-			state = State.Committed;
-			Unclosed();
-		}
-	}
+        FundsAdded(msg.sender, msg.value);
+        amountDeposited += msg.value;
+        if (state == State.Closed) {
+            state = State.Committed;
+            Unclosed();
+        }
+    }
 
-	function recoverFunds()
-	public
-	onlyCreatorWhileOpen()
-	{
-	    recovered = true;
-		FundsRecovered();
-		
-		if (state == State.PayerOpened)
-		    selfdestruct(payer);
-		else if (state == State.WorkerOpened)
-		    selfdestruct(worker);
-	}
+    function recoverFunds()
+    public
+    onlyCreatorWhileOpen()
+    {
+        recovered = true;
+        FundsRecovered();
+        
+        if (state == State.PayerOpened)
+            selfdestruct(payer);
+        else if (state == State.WorkerOpened)
+            selfdestruct(worker);
+    }
 
-	function commit()
-	public
-	inOpenState()
-	payable 
-	{
-		require(msg.value == commitThreshold);
+    function commit()
+    public
+    inOpenState()
+    payable 
+    {
+        require(msg.value == commitThreshold);
 
-		if (msg.value > 0) {
-			FundsAdded(msg.sender, msg.value);
-			amountDeposited += msg.value;
-		}
+        if (msg.value > 0) {
+            FundsAdded(msg.sender, msg.value);
+            amountDeposited += msg.value;
+        }
 
-		if (state == State.PayerOpened)
-    		worker = msg.sender;
-		else
-		    payer = msg.sender;
-		state = State.Committed;
-		
-		Committed(msg.sender);
+        if (state == State.PayerOpened)
+            worker = msg.sender;
+        else
+            payer = msg.sender;
+        state = State.Committed;
+        
+        Committed(msg.sender);
 
-		autoreleaseTime = now + autoreleaseInterval;
-	}
+        autoreleaseTime = now + autoreleaseInterval;
+    }
 
-	function internalBurn(uint amount)
-	private 
-	{
-		BURN_ADDRESS.transfer(amount);
+    function internalBurn(uint amount)
+    private 
+    {
+        BURN_ADDRESS.transfer(amount);
 
-		amountBurned += amount;
-		FundsBurned(amount);
+        amountBurned += amount;
+        FundsBurned(amount);
 
-		if (this.balance == 0) {
-			state = State.Closed;
-			Closed();
-		}
-	}
+        if (this.balance == 0) {
+            state = State.Closed;
+            Closed();
+        }
+    }
 
-	function burn(uint amount)
-	public
-	inState(State.Committed)
-	onlyPayer() 
-	{
-		internalBurn(amount);
-	}
+    function burn(uint amount)
+    public
+    inState(State.Committed)
+    onlyPayer() 
+    {
+        internalBurn(amount);
+    }
 
-	function internalRelease(uint amount)
-	private 
-	{
-		worker.transfer(amount);
+    function internalRelease(uint amount)
+    private 
+    {
+        worker.transfer(amount);
 
-		amountReleased += amount;
-		FundsReleased(amount);
+        amountReleased += amount;
+        FundsReleased(amount);
 
-		if (this.balance == 0) {
-			state = State.Closed;
-			Closed();
-		}
-	}
+        if (this.balance == 0) {
+            state = State.Closed;
+            Closed();
+        }
+    }
 
-	function release(uint amount)
-	public
-	inState(State.Committed)
-	onlyPayer() 
-	{
-		internalRelease(amount);
-	}
+    function release(uint amount)
+    public
+    inState(State.Committed)
+    onlyPayer() 
+    {
+        internalRelease(amount);
+    }
 
-	function logPayerStatement(string statement)
-	public
-	onlyPayer() 
-	{
-	    PayerStatement(statement);
-	}
+    function logPayerStatement(string statement)
+    public
+    onlyPayer() 
+    {
+        PayerStatement(statement);
+    }
 
-	function logWorkerStatement(string statement)
-	public
-	onlyWorker() 
-	{
-		WorkerStatement(statement);
-	}
+    function logWorkerStatement(string statement)
+    public
+    onlyWorker() 
+    {
+        WorkerStatement(statement);
+    }
 
-	function delayAutorelease()
-	public
-	onlyPayer()
-	inState(State.Committed) 
-	{
-		autoreleaseTime = now + autoreleaseInterval;
-		AutoreleaseDelayed();
-	}
+    function delayAutorelease()
+    public
+    onlyPayer()
+    inState(State.Committed) 
+    {
+        autoreleaseTime = now + autoreleaseInterval;
+        AutoreleaseDelayed();
+    }
 
-	function triggerAutorelease()
-	public
-	onlyWorker()
-	inState(State.Committed) 
-	{
-		require(now >= autoreleaseTime);
+    function triggerAutorelease()
+    public
+    onlyWorker()
+    inState(State.Committed) 
+    {
+        require(now >= autoreleaseTime);
 
         AutoreleaseTriggered();
-		internalRelease(this.balance);
-	}
-	
-	function getFullState()
-	public
-	constant
-	returns(State, address, address, string, uint, uint, uint, uint, uint, uint, uint) {
-		return (state, payer, worker, title, this.balance, commitThreshold, amountDeposited, amountBurned, amountReleased, autoreleaseInterval, autoreleaseTime);
-	}
+        internalRelease(this.balance);
+    }
+    
+    function getFullState()
+    public
+    constant
+    returns(State, address, address, string, uint, uint, uint, uint, uint, uint, uint) {
+        return (state, payer, worker, title, this.balance, commitThreshold, amountDeposited, amountBurned, amountReleased, autoreleaseInterval, autoreleaseTime);
+    }
 }
