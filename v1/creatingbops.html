@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>TC | Effective BPs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/common.css">
+  <!--<link rel="stylesheet" href="border.css">-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="script/loadNavbar.js"></script>
+</head>
+
+<body>
+
+<div id="nav-placeholder"></div>
+<div class="container">
+  <div class="well" style="font-size:1.5rem">
+    <h1>Creating Effective Burnable Payments</h1>
+      <p>None of these settings can be changed after a BP has been created, although you can add more ether or log additional payer statements. So double-check everything for typos, and make sure there aren't any extra or missing zeros in your ether amounts!</p>
+      <p>As BPs themselves are new methods of payment, there isn't a lot of experimental data: your mileage may vary. Here, we'll go through each input and talk about what has worked for us in the past.</p>
+      <h3>Payer</h3>
+        <p>This is the address that will control the payment. In most cases this will be your address. Note that you can double-click this input to auto-fill with your current Ethereum address.</p>
+      <h3>BP Title</h3>
+        <p>This will appear at the top of the BP on the interact page, as well as in the list of BPs on the browse page. This is displayed as a single line of no more than 100 characters, so we suggest keeping the title under this limit.</p>
+        <p>The title, like all of these fields, <b>cannot be edited after creation!</b> So make sure there aren't any typos or spelling errors.</p>
+      <h3>Payment Amount</h3>
+        <p>If a worker commits, this is how much you're committed to spending (or burning). If no one commits you can recover this payment and at any time you can add more funds.</p>
+      <h3>Service Deposit</h3>
+        <p>For a worker to commit to the BP, they must deposit this amount into the BP. At that point you'll be able to release or burn the total amount in the BP, which will be your initial payment plus the worker's deposit.</p>
+        <p>As a starting point, we recommend setting this to between 1/3 and 2/3 of the payment amount.</p>
+        <p>Higher service deposits mean it will take longer to find a worker, but the worker will be more confident and committed. Too high, and no one will commit at all; too low, and you risk getting incompetent, lazy, or dishonest workers.</p>
+      <h3>Auto-release</h3>
+        <p>This is the amount of time, after a worker has committed, that the BP will wait for input from you before the worker can trigger an auto-release. You can delay this timeout as many times as you want, resetting the timer to the full amount you set here. This is essentially to protect workers from "lazy payers" who don't bother to return to the payment regardless of whether the service was rendered effectively.</p>
+        <p>The shorter this timeout is, the more attractive the BP will be to workers; the longer it is, the less often you'll have to babysit the BP to make sure it doesn't auto-release before the worker has completed the job.</p>
+        <p>We recommend setting this at least as long as you expect the work to take, or possibly twice or three times as long. For a payer without an established reputation, a short auto-release timeout helps convince prospective workers that they are protected from a lazy payer.</p>
+        <p>For established payers, this is less essential, and can be set much longer.</p>
+        <p>You can set this value to decimal amounts, such as 0.1 days.</p>
+      <h3>Initial Statement</h3>
+        <p>This is where you give more detail on the work you want done. Good initial statements have the following characteristics:</p>
+        <ul>
+          <li>Clear, concise, and to-the-point.</li>
+          <li>Clearly state in which cases you will burn the entire payment, in which cases you'll release the entire payment, and examples of when you would release or burn part of the payment.</li>
+          <li>State how much involvement you expect to have in the work: should the worker be in constant contact, should they contact you only when it's done, or something in between?</li>
+          <li>Specify any time constraints on the job, and what your burn/release policies are in the case of missed deadlines.</li>
+        </ul>
+  </div>
+</div>
+
+</body>

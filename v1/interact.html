@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>TC | Interact</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/interact.css">
+  <!--<link rel="stylesheet" href="css/border.css">-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdn.rawgit.com/yahoo/xss-filters/master/dist/xss-filters.min.js"></script>
+  <script src="libs/moment.js"></script>
+  <script src="https://wallet.metamask.io/metamascara.js"></script>
+  <script src="https://unpkg.com/vue"></script>
+  <script src="libs/humanize-duration.js"></script>
+  <script src="libs/web3.min.js"></script>
+  <script src="script/constants.js"></script>
+  <script src="script/utils.js"></script>
+  <script src="script/components.js"></script>
+  <script src="script/contractInfo.js"></script>
+  <script src="script/interact.js"></script>
+</head>
+
+<body>
+
+<div id="nav-placeholder"></div>
+<div class="container">
+  <div id="noProviderWarningDiv" hidden='true' align='center'>
+    <div class="alert alert-warning" style='display:inline-block; margin-top:5rem'>
+      <strong>Alert! You do not have a web3 provider.</strong><br>
+      Getting Metamask or setting up <a href="wallet.metamask.io">Metamascara</a> is the quickest way to fix this.<br>
+      <a href="https://metamask.io/"><img src="resources/download-metamask.png" style="width:30rem"></a><br>
+      You can also use Mist or Parity. Refresh this page when you have a web3 provider.
+    </div>
+  </div>
+  <div id="ropstenWarning" hidden='true' align='center'>
+    <div class="alert alert-warning" style='display:inline-block;'>
+      <p><strong>You are currently operating on the Ropsten testnet.</strong></p>
+      <p>To interact with real Burnable Payments, change your Metamask network to the "Main" Ethereum network, and refresh.</p>
+    </div>
+  </div>
+  <div id="web3LockedWarning" hidden='true' align='center'>
+    <div class="alert alert-warning" style='display:inline-block;'>
+      <p><strong>No Ethereum account found.</strong></p>
+      <p>You are currently unable to initiate any commands. Make sure Metamask is unlocked and refresh.</p>
+    </div>
+  </div>
+  <div id="web3Div" hidden='true'>
+    <div id="BOPVue" align='center'>
+      <div id="verifiedOutput" style="font-size:1.8rem"></div>
+      <p>BP at address: {{BOP.address}}</p>
+      <div class="well">
+        <div style="font-size:2rem">{{BOP.title}}</div>
+        <p style="font-size:1rem;color:orange">(Scroll down and check the events for more details!)</p>
+        <div class="row">
+          <div class="col-sm-4"></div>
+          <div class="col-sm-4">
+            <bop-state-output :state=BOP.state></bop-state-output>
+          </div>
+          <div class="col-sm-3">
+            <div v-if="BOP.state == 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ffdd99">
+              Auto-release:<br>
+              <duration-output :seconds=BOP.autoreleaseInterval></duration-output>
+            </div>
+            <div v-else-if="BOP.state == 1 && secondsUntilAutorelease >= 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ffdd99">
+              Auto-release in:<br>
+              <duration-output :seconds=secondsUntilAutorelease></duration-output>
+            </div>
+            <div v-else-if="BOP.state == 1 && secondsUntilAutorelease < 0" class="well well-sm" style="margin-bottom:0;display:inline-block;background-color:#ccffcc">
+              <button v-if="userIsWorker" class="btn btn-info" type="button" onclick="triggerAutorelease()">Trigger Autorelease</button>
+              <div v-else>The worker can now trigger the auto-release!</div>
+            </div>
+            <button v-if="BOP.state == 1 && userIsPayer" class="btn btn-info" type="button" onclick="delayAutorelease()">Delay</button>
+            
+          </div>
+          <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="well well-sm" style="background-color:#bbffff;display:inline-block">
+              <b>Payer:</b><br>
+              <eth-address-output :address=BOP.payer></eth-address-output>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="row">
+              <div class="col-xs-4" style="text-align:left">
+                <img class="img-responsive" style="min-width:9rem;width:9rem;" src="resources/arrow_deposit.png">
+                <div style="position:relative;left:1rem;top:-2.2rem"><ether-output :wei=BOP.amountDeposited></ether-output></div>
+                <div style="position:relative;left:1rem;top:-2.2rem">funded</div><br>
+                <button v-if="userIsPayer" type="button" class="btn btn-success" data-toggle="modal" data-target="#addfunds-modal">Add Funds</button>
+              </div>
+              <div class="col-xs-4">
+                <div class="well" style="background-color:#ccffcc;margin-bottom:2px">
+                  <font style="font-size:2rem"><ether-output :wei=BOP.balance></ether-output></font><br>
+                  held in BP
+                </div>
+                <div v-if="BOP.state == 1 && userIsPayer" class="btn-group" style="display:flex">
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#release-modal">Release</button>
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#burn-modal">Burn</button>
+                </div>
+                <button v-if="BOP.state == 0 && userIsPayer" class="btn btn-danger" onClick="callRecoverFunds()">Cancel BP<br>(recover funds)</button>
+              </div>
+              <div class="col-xs-4">
+                <div v-if="BOP.state == 0" class="well" style="background-color:#bbffff;display:inline-block">
+                  <font style="font-size:1.2rem">
+                    Service Deposit:<br>
+                  </font>
+                  <font style="font-size:1.5rem">
+                    <ether-output :wei=BOP.serviceDeposit></ether-output>
+                  </font><br>
+                  <button class="btn btn-lg btn-warning" onClick="callCommit()">Commit</button>
+                </div>
+                <div v-if="BOP.state != 0" style="text-align:left">
+                  <img class="img-responsive" style="min-width:9rem;width:9rem;" src="resources/arrow_release.png">
+                  <div style="position:relative;left:1rem;top:-2.2rem"><ether-output :wei=BOP.amountReleased></ether-output></div>
+                  <div style="position:relative;left:1rem;top:-2.2rem">released</div>
+                  <img src="resources/flame.png" style="position:relative;width:6rem">
+                  <div style="position:relative;left:1rem;top:-1.4rem"><ether-output :wei=BOP.amountBurned></ether-output></div>
+                  <div style="position:relative;left:1rem;top:-1.4rem">burned</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3" style="align-items:center">
+            <div v-if="BOP.state != 0" class="well well-sm" style="background-color:#bbffff;display:inline-block">
+              <b>Worker:</b><br>
+              <eth-address-output :address=BOP.worker></eth-address-output>
+            </div>
+          </div>
+        </div>
+        <div v-if="userIsPayer || userIsWorker" class="row">
+          <hr>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <textarea id="statement-input" class="form-control" rows="3"></textarea>
+              <div v-if="userIsPayer" align='left'><button type="button" class="btn btn-primary" onClick="logPayerStatementFromForm()">Log Payer Statement</button></div>
+              <div v-else-if="userIsWorker" align='right'><button type="button" class="btn btn-primary" onClick="logWorkerStatementFromForm()">Log Worker Statement</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="release-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4>Release</h4>
+            </div>
+            <div class="modal-body">
+              Release <input id="release-amount-input" size=10> ETH<br>
+              <button type="button" class="btn btn-success" data-dismiss="modal" onclick="releaseFromForm()">Release</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="burn-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4>Burn</h4>
+            </div>
+            <div class="modal-body">
+              Burn <input id="burn-amount-input" size=10> ETH<br>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="burnFromForm()">Burn</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="addfunds-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4>Add Funds</h4>
+            </div>
+            <div class="modal-body">
+              Add <input id="addfunds-amount-input" size=10> ETH<br>
+              <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addfundsFromForm()">Add Funds</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-warning">Note: The event list below does not yet auto-update, and if using Metamask without a local node, it may take some time for logs to appear after being processed (In some cases <a href="https://gianlucaschoefer.github.io/">Toastycoin Beta</a> shows event logs more reliably).</div>
+    <div id="eventLogVue">
+      <div class="well">
+        <div v-if="events.length == 0" id="eventsLoading" align='center' style="color:blue">Loading event log...<br>(this can take up to a minute or two on slower connections)</div>
+        <div v-for="event in events">
+          <bop-event-row :event="event"></bop-event><br>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
