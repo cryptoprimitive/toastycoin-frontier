@@ -1,0 +1,36 @@
+html {
+    font-size:100%;
+}
+body {
+    font-size:100%;
+}
+.container-box {
+    position: relative;
+    display: inline-block;
+}
+.text-box {
+    position: absolute;    
+    height: 100%;
+    text-align: center;    
+    width: 100%;
+}
+.text-box:before {
+   content: '';
+   display: inline-block;
+   height: 100%;
+   vertical-align: middle;
+}
+.image-text {
+   display: inline-block;
+   
+}
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+hr {
+  background-color: #aaaaaa;
+  width: 100%;
+  height: 3px;
+}
