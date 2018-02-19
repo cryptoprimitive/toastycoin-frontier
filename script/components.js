@@ -43,9 +43,9 @@ Vue.component('bp-state-output', {
   computed: {
     formattedState: function() {
       if (this.state == 0)
-        return "PayerOpened";
+        return "Open Payment";
       else if (this.state == 1)
-          return "WorkerOpened";
+          return "Open Service";
       else if (this.state == 2)
         return "Committed";
       else if (this.state == 3)
@@ -53,11 +53,11 @@ Vue.component('bp-state-output', {
     },
     color: function() {
       if (this.state == 0)
-        return "#ccffcc";
+        return "#aaffaa";
       else if (this.state == 1)
-          return "#ccffcc";
+          return "cyan";
       else if (this.state == 2)
-        return "cyan";
+        return "#ff00ff";
       else if (this.state == 3)
         return "#aaaaaa";
     }
