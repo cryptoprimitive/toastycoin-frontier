@@ -16,10 +16,10 @@ function formatWeiValue(wei) {
     else return wei.toString() + " wei";
 }
 
-function prepareBOPFactoryContract() {
-    BOPFactory.ABI = BOP_FACTORY_ABI;
-    BOPFactory.contract = web3.eth.contract(BOPFactory.ABI);
-    BOPFactory.contractInstance = BOPFactory.contract.at(BOPFactory.address);
+function prepareBPFactoryContract() {
+    BPFactory.ABI = BP_FACTORY_ABI;
+    BPFactory.contract = web3.eth.contract(BPFactory.ABI);
+    BPFactory.contractInstance = BPFactory.contract.at(BPFactory.address);
 }
 var web3 = typeof web3 === 'undefined' ? undefined : web3;
 
@@ -36,12 +36,12 @@ function prepareWeb3() {
             $('#web3LockedWarning').show();
         } else {
             $('#web3LockedWarning').hide();
-            web3.eth.createDefaultProvidertAccount = web3.eth.accounts[0];
+            web3.eth.defaultAccount = web3.eth.accounts[0];
             clearInterval(accountIntervalID);
         }
     }, 250)
 
-    window.BOPFactory = {};
+    window.BPFactory = {};
     web3.version.getNetwork((err, netID) => {
         if (netID !== '3') {
             if (netID !== '1') {
@@ -52,16 +52,16 @@ function prepareWeb3() {
             window.filterStartBlock = FILTER_START_BLOCK;
             window.etherscanURL = "https://etherscan.io/"
             window.etherscanAPIURL = "https://api.etherscan.io/api?";
-            BOPFactory.address = BOP_FACTORY_ADDRESS;
-            prepareBOPFactoryContract();
+            BPFactory.address = BP_FACTORY_ADDRESS;
+            prepareBPFactoryContract();
             onWeb3Ready();
         } else if (netID === '3') {
             console.log("You are on the Ropsten net!");
             window.filterStartBlock = FILTER_START_BLOCK_ROPSTEN;
             window.etherscanURL = "https://ropsten.etherscan.io/";
             window.etherscanAPIURL = "https://ropsten.etherscan.io/api?";
-            BOPFactory.address = BOP_FACTORY_ADDRESS_ROPSTEN;
-            prepareBOPFactoryContract();
+            BPFactory.address = BP_FACTORY_ADDRESS_ROPSTEN;
+            prepareBPFactoryContract();
             $('#ropstenWarning').show();
             onWeb3Ready();
         }
