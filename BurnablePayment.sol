@@ -38,10 +38,6 @@ contract BurnablePaymentFactory {
 	//contract address array
 	address[]public BPs;
 
-	//JSMIT Long constructor declaration - see http://solidity.readthedocs.io/en/develop/style-guide.html#function-declaration
-	//JSMIT Event names CamelCase - see http://solidity.readthedocs.io/en/develop/style-guide.html#event-names
-	//JSMIT Function Argument names - mixedCase - see http://solidity.readthedocs.io/en/develop/style-guide.html#function-argument-names
-	//JSMIT Renamed due to conflict with function newBP
 	event NewBurnablePayment(
 		address indexed bpAddress, 
 		bool payerOpened, 
@@ -84,7 +80,7 @@ contract BurnablePayment {
 	//BP will start with a payer or a worker but not both
 	address public payer;
 	address public worker;
-	address constant BURN_ADDRESS = 0x0; //JSMIT Constant naming convention - see http://solidity.readthedocs.io/en/develop/style-guide.html#constants
+	address constant BURN_ADDRESS = 0x0;
 	
 	//Set to true if fundsRecovered is called
 	bool recovered = false;
@@ -114,7 +110,7 @@ contract BurnablePayment {
 	}
 
 	//Note that a BP cannot go from Committed back to either Open state, but it can go from Closed back to Committed
-	//(this would retain the committed worker). Search for Closed and Unclosed events to see how this works.
+	//Search for Closed and Unclosed events to see how this works.
 	State public state;
 
 	modifier inState(State s) {
@@ -141,7 +137,7 @@ contract BurnablePayment {
         if (state == State.PayerOpened) {
             require(msg.sender == payer);
         } else if (state == State.WorkerOpened) {
-            require(msg.sender == worker); //modified message => msg
+            require(msg.sender == worker);
         } else {
             revert();        
         }
@@ -161,11 +157,11 @@ contract BurnablePayment {
 	event AutoreleaseDelayed();
 	event AutoreleaseTriggered();
 
-	function BurnablePayment(bool _payerIsOpening, address creator, uint _commitThreshold, uint _autoreleaseInterval, string _title, string initialStatement)
+	function BurnablePayment(bool payerIsOpening, address creator, uint _commitThreshold, uint _autoreleaseInterval, string _title, string initialStatement)
 	public
 	payable 
 	{
-		Created(this, true, payer, _commitThreshold, autoreleaseInterval, title);
+		Created(this, payerIsOpening, creator, _commitThreshold, autoreleaseInterval, title);
 
 		if (msg.value > 0) {
 		    //Here we use tx.origin instead of msg.sender (msg.sender is just the factory contract)
@@ -175,7 +171,7 @@ contract BurnablePayment {
 		
 		title = _title;
 
-        if (_payerIsOpening) {
+        if (payerIsOpening) {
             state = State.PayerOpened;
             payer = creator;
         } else {
@@ -187,10 +183,10 @@ contract BurnablePayment {
 		autoreleaseInterval = _autoreleaseInterval;
 
 		if (bytes(initialStatement).length > 0) {
-			if (_payerIsOpening) {
-		    	PayerStatement(initialStatement);
+			if (payerIsOpening) {
+                PayerStatement(initialStatement);
 			} else {
-		    	WorkerStatement(initialStatement);				
+                WorkerStatement(initialStatement);				
 			}
 		}
 	}
