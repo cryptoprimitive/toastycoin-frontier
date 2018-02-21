@@ -43,7 +43,7 @@ Vue.component('bp-state-output', {
   computed: {
     formattedState: function() {
       if (this.state == 0)
-        return "Open Payment";
+        return "Open Task";
       else if (this.state == 1)
           return "Open Service";
       else if (this.state == 2)

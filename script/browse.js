@@ -86,7 +86,7 @@ compareResult = b.balance - a.balance
 //  address (string)
 //  payer (string)
 //  title (string)
-//  state (0, 1, or 2)
+//  state (0,1,2,3) (0: payerOpened, 1: workerOpened, 2: committed, 3: closed)
 //  worker (string)
 //  balance (BigNumber, wei)
 //  serviceDeposit (BigNumber, wei)
