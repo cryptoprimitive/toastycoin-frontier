@@ -38,23 +38,27 @@ Vue.component('ether-output', {
   template: "<span>{{formatted}}</span>"
 });
 
-Vue.component('bop-state-output', {
+Vue.component('bp-state-output', {
   props: ['state'],
   computed: {
     formattedState: function() {
       if (this.state == 0)
-        return "Open";
+        return "Open Task";
       else if (this.state == 1)
-        return "Committed";
+          return "Open Service";
       else if (this.state == 2)
+        return "Committed";
+      else if (this.state == 3)
         return "Closed";
     },
     color: function() {
       if (this.state == 0)
-        return "#ccffcc";
+        return "#aaffaa";
       else if (this.state == 1)
-        return "cyan";
+          return "cyan";
       else if (this.state == 2)
+        return "#ff00ff";
+      else if (this.state == 3)
         return "#aaaaaa";
     }
   },
@@ -70,7 +74,7 @@ Vue.component('create-result-row', {
   },
   template:
 `<div v-if="!(this.result.mined)">Waiting for transaction to be mined: <a target="_blank" :href="this.etherscanURL + 'tx/' + this.result.txHash">{{result.txHash}}</a></div>
-<div v-else><a target="_blank" :href="'interact.html?address=' + this.result.BOPAddress">BP created!</a></div>
+<div v-else><a target="_blank" :href="'interact.html?address=' + this.result.BPAddress">BP created!</a></div>
 `
 });
 
@@ -88,7 +92,7 @@ Vue.component('blocknum-output', {
   template: `<span style="font-size:0.7rem">@block {{formattedBlocknum}} (~{{formattedTimestamp}})</span>`
 });
 
-Vue.component('bop-event-row', {
+Vue.component('bp-event-row', {
   props: ['event'],
   computed: {
     formattedPayerStatement: function() {
@@ -96,6 +100,9 @@ Vue.component('bop-event-row', {
     },
     formattedWorkerStatement: function() {
       return "Worker Statement<br><div class='well well-sm' style='margin-bottom:0;background-color:#aaffff'>"+xssFilters.inHTMLData(this.event.args.statement).replace(/(?:\r\n|\r|\n)/g, '<br />') + "</div>";
+    },
+    formattedCommit: function() {
+      return (  BPVue.BP.payer == this.event.args.committer) ? '<span>Payer committed to the BP</span>' : '<span>Worker committed to the BP<span>';
     }
   },
   template:
@@ -105,7 +112,7 @@ Vue.component('bop-event-row', {
 <div v-else-if="this.event.event == 'PayerStatement'" align='left'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedPayerStatement'></div></div>
 <div v-else-if="this.event.event == 'WorkerStatement'" align='right'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffff;display:inline-block;max-width:50%' v-html='formattedWorkerStatement'></div></div>
 <div v-else-if="this.event.event == 'FundsRecovered'" align='left'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ff8888;display:inline-block'>Payer cancelled the BP and recovered the funds.</div></div>
-<div v-else-if="this.event.event == 'Committed'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'>Worker committed to the BP.</div></div>
+<div v-else-if="this.event.event == 'Committed'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block' v-html='formattedCommit'></div></div>
 <div v-else-if="this.event.event == 'FundsBurned'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ffaaaa;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> burned.</div></div>
 <div v-else-if="this.event.event == 'FundsReleased'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#ccffcc;display:inline-block'><ether-output :wei='event.args.amount'></ether-output> released.</div></div>
 <div v-else-if="this.event.event == 'Closed'" align='center'><blocknum-output :blocknum='event.blockNumber' :timestamp='event.timestamp'></blocknum-output><br><div class='well well-sm' align='left' style='background-color:#dddddd;display:inline-block'>Payment closed.</div></div>
@@ -128,13 +135,13 @@ Vue.component('autorelease-output', {
       this.now = Math.floor(Date.now()/1000);
       
       //determine display state
-      if (this.state == 0 || this.state == 2) {
+      if (this.state == 0 || this.state == 3 || this.state == 1) {
         this.displayState = 'interval';
       }
-      else if (this.state == 1 && this.autoreleaseTime > this.now) {
+      else if (this.state == 2 && this.autoreleaseTime > this.now) {
         this.displayState = 'countdown';
       }
-      else if (this.state == 1 && this.autoreleaseTime <= this.now) {
+      else if (this.state == 2 && this.autoreleaseTime <= this.now) {
         this.displayState = 'countdownDone';
       }
     }

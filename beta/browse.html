@@ -64,33 +64,37 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="BOP in BOPs">
-            <td @click="goToInteractPage(BOP.address)" style="cursor:pointer">
-              <eth-address-output :address=BOP.address></eth-address-output><br>
-              <bop-state-output :state=BOP.state></bop-state-output><br>
-              <autorelease-output :state="BOP.state" :autorelease-interval="BOP.autoreleaseInterval" :autorelease-time="BOP.autoreleaseTime"></autorelease-output>
+          <tr v-for="BP in BPs">
+            <td @click="goToInteractPage(BP.address)" style="cursor:pointer">
+              <eth-address-output :address=BP.address></eth-address-output><br>
+              <bp-state-output :state=BP.state></bp-state-output><br>
+              <autorelease-output :state="BP.state" :autorelease-interval="BP.autoreleaseInterval" :autorelease-time="BP.autoreleaseTime"></autorelease-output>
             </td>
             <td>
-              Payer: <eth-address-output :address=BOP.payer></eth-address-output><br>
-              Worker: <eth-address-output :address=BOP.worker></eth-address-output>
+              Payer: <eth-address-output :address=BP.payer></eth-address-output><br>
+              Worker: <eth-address-output :address=BP.worker></eth-address-output>
             </td>
             <td>
-              {{BOP.title}}
+              {{BP.title}}
             </td>
             <td>
-              <div v-if="BOP.state == 0">
-                Balance: <ether-output :wei=BOP.balance></ether-output><br>
-                Service Deposit: <ether-output :wei=BOP.serviceDeposit></ether-output>
+              <div v-if="BP.state == 0">
+                Deposited Payment Amount: <ether-output :wei=BP.balance></ether-output><br>
+                Service Deposit Required: <ether-output :wei=BP.commitThreshold></ether-output>
               </div>
-              <div v-if="BOP.state == 1">
-                Deposited: <ether-output :wei=BOP.amountDeposited></ether-output><br>
-                Balance: <ether-output :wei=BOP.balance></ether-output><br>
-                Released: <ether-output :wei=BOP.amountReleased></ether-output><br>
-                Burned: <ether-output :wei=BOP.amountBurned></ether-output>
+              <div v-if="BP.state == 1">
+                Required Payment: <ether-output :wei=BP.commitThreshold></ether-output><br>
+                Service Deposit Paid: <ether-output :wei=BP.balance></ether-output>
               </div>
-              <div v-if="BOP.state == 2">
-                Released: <ether-output :wei=BOP.amountReleased></ether-output><br>
-                Burned: <ether-output :wei=BOP.amountBurned></ether-output>
+              <div v-if="BP.state == 2">
+                Deposited: <ether-output :wei=BP.amountDeposited></ether-output><br>
+                Balance: <ether-output :wei=BP.balance></ether-output><br>
+                Released: <ether-output :wei=BP.amountReleased></ether-output><br>
+                Burned: <ether-output :wei=BP.amountBurned></ether-output>
+              </div>
+              <div v-if="BP.state == 3">
+                Released: <ether-output :wei=BP.amountReleased></ether-output><br>
+                Burned: <ether-output :wei=BP.amountBurned></ether-output>
               </div>
             </td>
           </tr>
@@ -104,7 +108,7 @@
               <h4>Set new compare code</h4>
             </div>
             <div class="modal-body">
-              <textarea id="compare-code-input" class="form-control" style="font-family:monospace" rows=20 style="mid-width:100%"></textarea><br>
+              <textarea id="compare-code-input" class="form-control" style="font-family:monospace" rows=20 style="width:100%"></textarea><br>
               <button class="btn btn-success" data-dismiss="modal" onclick="applyNewCompareCode()">Apply code</button>
             </div>
           </div>
