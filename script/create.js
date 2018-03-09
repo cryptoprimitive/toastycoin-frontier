@@ -1,43 +1,35 @@
 function onWeb3Ready() {}
 
-function handleNewBPResult(err, res) {
+function handleNewBOPResult(err, res) {
   if (err) alert(err.message);
   else {
     console.log(res);
     window.createResultListVue.newResult(res);
   }
 }
-
-function callNewBP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer) {
+function callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement) {
     var valueInWei = web3.toWei(valueInEth, 'ether');
-    var serviceDepositInWei =web3.toWei(serviceDepositInEth, 'ether'); 
-    var commitThreshold = isPayer ? serviceDepositInWei : valueInWei;
+    var serviceDepositInWei = web3.toWei(serviceDepositInEth, 'ether');
     var autoreleaseIntervalInSeconds = autoreleaseIntervalInDays*24*60*60;
-    var depositAmount = isPayer ? valueInWei : serviceDepositInWei;
-    
-    BPFactory.contractInstance
-    .newBP(isPayer, payer, commitThreshold, autoreleaseIntervalInSeconds, title, initialPayerStatement, 
-      {'value': depositAmount, 'gas': 1500000}, handleNewBPResult);
+
+    BOPFactory.contractInstance.newBurnableOpenPayment(payer, serviceDepositInWei, autoreleaseIntervalInSeconds, title, initialPayerStatement, {'value': valueInWei, 'gas': 1500000}, handleNewBOPResult);
 }
 
-function newBPFromForm() {
-  
-  var isPayer = $("#payerInputLabel").html() == "Payer address";
-
-  var valueInEth = $("#payerForm #paymentAmountInput").val();
+function newBOPFromForm() {
+  var valueInEth = $("#NewBOPForm #paymentAmountInput").val();
   if (valueInEth == '') {
     alert("Must specify payment amount!");
     return;
   }
   valueInEth = Number(valueInEth);
 
-  var payer = $("#payerForm #payerInput").val();
+  var payer = $("#NewBOPForm #payerInput").val();
   if (payer == '') {
     alert("Must specify payer!");
     return;
   }
 
-  var serviceDepositInEth = $("#payerForm #serviceDepositInput").val();
+  var serviceDepositInEth = $("#NewBOPForm #serviceDepositInput").val();
   console.log(serviceDepositInEth);
   if (serviceDepositInEth == '') {
     alert("Must specify commit threshold!");
@@ -45,36 +37,27 @@ function newBPFromForm() {
   }
   serviceDepositInEth = Number(serviceDepositInEth);
 
-  var autoreleaseIntervalInDays = $("#payerForm #autoreleaseTimerInput").val();
+  var autoreleaseIntervalInDays = $("#NewBOPForm #autoreleaseTimerInput").val();
   if (autoreleaseIntervalInDays == '') {
     alert("Must specify a default timeout length!");
     return;
   }
   autoreleaseIntervalInDays = Number(autoreleaseIntervalInDays);
 
-  var title = $("#payerForm #titleInput").val();
+  var title = $("#NewBOPForm #titleInput").val();
   if (title == '') {
     alert("BP must have a title!");
     return;
   }
   
-  var initialPayerStatement = $("#payerForm #initialStatementInput").val();
+  var initialPayerStatement = $("#NewBOPForm #initialStatementInput").val();
   if (initialPayerStatement == '') {
     if (!confirm("Initial payer statement is empty! Are you sure you want to open a BP without an initial statement?")) {
       return;
     }
   }
-
-  callNewBP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement, isPayer);
-}
-
-
-function showPayer() {
-  $("#payerInputLabel").html("Payer address"); 
-}
-
-function showWorker() {
-  $("#payerInputLabel").html("Worker address"); 
+  
+  callNewBOP(valueInEth, payer, serviceDepositInEth, autoreleaseIntervalInDays, title, initialPayerStatement);
 }
 
 function populatePayerInputFromMetamask() {
@@ -105,7 +88,7 @@ function createCreateResultListVue() {
         this.createResults.push({
           txHash: txHash,
           mined: false,
-          BPAddress: null
+          BOPAddress: null
         });
       },
       createTxMined(txReceipt) {
@@ -114,7 +97,7 @@ function createCreateResultListVue() {
           if (this.createResults[i].txHash == txHash) {
             this.createResults[i].mined = true;
             console.log(txReceipt);
-            this.createResults[i].BPAddress = txReceipt.logs[0].address;
+            this.createResults[i].BOPAddress = txReceipt.logs[0].address;
             break;
           }
         }
@@ -150,9 +133,5 @@ window.addEventListener('load', function() {
   
   $('[data-toggle="popover"]').popover();
   
-  $(".btn-group > .btn").click(function(){
-    $(this).addClass("active").siblings().removeClass("active");
-  });
-
   prepareWeb3();
 });

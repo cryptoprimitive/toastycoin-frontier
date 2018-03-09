@@ -18,7 +18,7 @@
 <div class="container">
   <div class="well" style="font-size:1.8rem">
     <div class="alert alert-info">
-      <p>Note: the images in this page are a bit out of date; they refer to Burnable Payments as "BOPs" and don't necessarily resemble the latest version of the Toastycoin interface.</p>
+      <p>Note: the images in this page are a bit out of date; they refer to Burnable Payments as "BPs" and don't necessarily resemble the latest version of the Toastycoin interface.</p>
       <p>Aside from these superficial discrepancies, the information below remains accurate.</p>
     </div>
     <h1>Rules of the Game</h1>
@@ -30,7 +30,7 @@
         <ul>
           <li>The payer can no longer recover the ether in the payment.</li>
           <li>The worker is "locked in" to the BP (this role can never be changed or revoked).</li>
-          <li>The payer can release the payment to the worker, or burn (meaning <a href="http://toastycoin.com/gametheory.html" style="cursor:pointer" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-content="When ether is &lt;i&gt;burned&lt;/i&gt;, this means it&#39;s sent to the address 0x0. Since no one can access any funds from this address, the ether is effectively destroyed&mdash;removed permanently from circulation." data-original-title="" title="">destroy</a>) it.</li>
+          <li>The payer can release the payment to the worker, or burn (meaning <a href="gametheory.html" style="cursor:pointer" data-toggle="popover" data-placement="bottom" data-html="true" data-trigger="focus" data-content="When ether is &lt;i&gt;burned&lt;/i&gt;, this means it&#39;s sent to the address 0x0. Since no one can access any funds from this address, the ether is effectively destroyed&mdash;removed permanently from circulation." data-original-title="" title="">destroy</a>) it.</li>
         </ul>
       </ul>
       <p>There are a few more aspects we will ignore for now and return to further below:</p>
@@ -44,7 +44,7 @@
       <h1>The Game Tree</h1>
       <p>In this discussion we'll make use of a couple tools from game theory: <i>game trees</i> and <i>backward induction</i>. If these concepts are new to you, I suggest taking a look at <a href="http://www.umass.edu/preferen/Game%20Theory%20Evolving/GTE%20Public/GTE%20Game%20Theory%20Basic%20Concepts.pdf">this introduction to game trees</a>, which uses backward induction (but doesn't explicitly say so), as well as <a href="https://en.wikipedia.org/wiki/Backward_induction">the wiki on backward induction</a>.</p>
       <p>First, we'll build our game tree. The first node is the beginning of our "game"&emdash;the creation of the BP by the payer. Each subsequent level represents a choice one of the players can make.</p>
-      <center><img src="http://toastycoin.com/resources/game_tree.png"></center>
+      <center><img src="resources/game_tree.png"></center>
       <p>Each node with no children represents an end state to the game. Here we can see there are 5 end states:</p>
       <ul>
         <li><b>C1:</b> The worker commits and fails to complete the work, and the payer releases the payment.</li>

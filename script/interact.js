@@ -1,4 +1,4 @@
-function markBPVerified(flag) {
+function markBOPVerified(flag) {
   if (flag) {
     $("#verifiedOutput").css('color','green');
     $("#verifiedOutput").html("BP verified!");
@@ -10,22 +10,22 @@ function markBPVerified(flag) {
 }
 
 
-function verifyAddressIsBP() {
-  markBPVerified(false);
-  window.BPFactory.contractInstance.getBPCount(function(err, res) {
+function verifyAddressIsBOP() {
+  markBOPVerified(false);
+  window.BOPFactory.contractInstance.getBOPCount(function(err, res) {
     if (err) {
         console.log("Error calling BP method: " + err.message);
     }
     else {
-      var numBPs = Number(res);
-      for (var i = 0; i < numBPs; i++) {
-        BPFactory.contractInstance.BPs(i, function(err, res) {
+      var numBOPs = Number(res);
+      for (var i = 0; i < numBOPs; i++) {
+        BOPFactory.contractInstance.BOPs(i, function(err, res) {
           if (err) {
               console.log("Error calling BP method: " + err.message);
           }
-          else if (BPVue.BP.address == res) {
-            //we've found a match in the BPs list in the Factory contract; the address does point to a BP.
-            markBPVerified(true);
+          else if (BOPVue.BOP.address == res) {
+            //we've found a match in the BOPs list in the Factory contract; the address does point to a BOP.
+            markBOPVerified(true);
           }
         });
       }
@@ -33,25 +33,25 @@ function verifyAddressIsBP() {
   });
 }
 
-function newBPAddress(newAddress) {
-  var BP = {address:newAddress};
-  BP.contract = web3.eth.contract(BP_ABI);
-  BP.contractInstance = BP.contract.at(BP.address);
-  BPVue.newBP(BP);
-  eventLogVue.newBP(BP);
+function newBOPAddress(newAddress) {
+  var BOP = {address:newAddress};
+  BOP.contract = web3.eth.contract(BOP_ABI);
+  BOP.contractInstance = BOP.contract.at(BOP.address);
+  BOPVue.newBOP(BOP);
+  eventLogVue.newBOP(BOP);
 }
-function createBPVue() {
+function createBOPVue() {
   return new Vue({
-    el: '#BPVue',
+    el: '#BOPVue',
     data: {
-      BP:{
+      BOP:{
         address: "[loading]",
         payer: "[loading]",
         title: "[loading]",
         state: 0,
         worker: "[loading]",
         balance: 0,
-        commitThreshold: 0,
+        serviceDeposit: 0,
         amountDeposited: 0,
         amountBurned: 0,
         amountReleased: 0,
@@ -68,48 +68,48 @@ function createBPVue() {
         this.now = Math.floor(Date.now()/1000);
         
         //check is web3 user is payer or worker
-        if (web3.eth.defaultAccount == this.BP.payer)
+        if (web3.eth.defaultAccount == this.BOP.payer)
           this.userIsPayer = true;
-        if (web3.eth.defaultAccount == this.BP.worker)
+        if (web3.eth.defaultAccount == this.BOP.worker)
           this.userIsWorker = true;
 
         $('[data-toggle="popover"]').popover();
       },
-      newBP: function(BP) {
-        this.BP.address = BP.address;
-        this.BP.contract = BP.contract;
-        this.BP.contractInstance = BP.contractInstance;
-        this.fetchBPState();
+      newBOP: function(BOP) {
+        this.BOP.address = BOP.address;
+        this.BOP.contract = BOP.contract;
+        this.BOP.contractInstance = BOP.contractInstance;
+        this.fetchBOPState();
       },
-      fetchBPState: function() {
-        this.BP.contractInstance.getFullState(function(err, res) {
+      fetchBOPState: function() {
+        this.BOP.contractInstance.getFullState(function(err, res) {
           if (err) {
             console.log(err.message);
           }
           else {
             //can't use 'this' as this is an anonymous function
-            BPVue.updateBPState(res);
+            BOPVue.updateBOPState(res);
           }
         });
       },
-      //(0-state, 1-payer, 2-worker, 3-title, 4-balance, 5-commitThreshold, 6-amountDeposited, 7-amountBurned, 8-amountReleased, 9-autoreleaseInterval, 10-autoreleaseTime);
-      updateBPState: function(getStateResult) {
-        this.BP.state = getStateResult[0].toString();
-        this.BP.payer = getStateResult[1].toString();
-        this.BP.worker = getStateResult[2].toString();
-        this.BP.title = truncateTitleIfTooLong(xssFilters.inHTMLData(getStateResult[3].toString()));
-        this.BP.balance = new web3.BigNumber(getStateResult[4].toString());
-        this.BP.commitThreshold = new web3.BigNumber(getStateResult[5].toString())
-        this.BP.amountDeposited = new web3.BigNumber(getStateResult[6].toString());
-        this.BP.amountBurned = new web3.BigNumber(getStateResult[7].toString());
-        this.BP.amountReleased = new web3.BigNumber(getStateResult[8].toString());
-        this.BP.autoreleaseInterval = new web3.BigNumber(getStateResult[9].toString());
-        this.BP.autoreleaseTime = new web3.BigNumber(getStateResult[10].toString());  
+      updateBOPState: function(getStateResult) {
+        this.BOP.payer = getStateResult[0].toString();
+        this.BOP.title = xssFilters.inHTMLData(getStateResult[1].toString());
+        this.BOP.title = truncateTitleIfTooLong(this.BOP.title);
+        this.BOP.state = new web3.BigNumber(getStateResult[2].toString());
+        this.BOP.worker = getStateResult[3].toString();
+        this.BOP.balance = new web3.BigNumber(getStateResult[4].toString());
+        this.BOP.serviceDeposit = getStateResult[5].toString();
+        this.BOP.amountDeposited = new web3.BigNumber(getStateResult[6].toString());
+        this.BOP.amountBurned = new web3.BigNumber(getStateResult[7].toString());
+        this.BOP.amountReleased = new web3.BigNumber(getStateResult[8].toString());
+        this.BOP.autoreleaseInterval = new web3.BigNumber(getStateResult[9].toString());
+        this.BOP.autoreleaseTime = new web3.BigNumber(getStateResult[10].toString());
       }
     },
     computed: {
       secondsUntilAutorelease: function() {
-        return this.BP.autoreleaseTime - this.now;
+        return this.BOP.autoreleaseTime - this.now;
       }
     }
   });
@@ -133,8 +133,8 @@ function createEventLogVue() {
       events: []
     },
     methods: {
-      newBP: function(BP) {
-        var eventWatcher = BP.contractInstance.allEvents({fromBlock:window.filterStartBlock});
+      newBOP: function(BOP) {
+        var eventWatcher = BOP.contractInstance.allEvents({fromBlock:window.filterStartBlock});
         eventWatcher.get(function(err, events) {
           if (err) console.log("Error when fetching events:",err);
           else {
@@ -154,47 +154,47 @@ function createEventLogVue() {
 function onWeb3Ready() {
   var address = getUrlParameter("address");
   
-  newBPAddress(address);
-  verifyAddressIsBP();
+  newBOPAddress(address);
+  verifyAddressIsBOP();
 }
 window.addEventListener('load', function() {
   $.get("navbar.html", function(data){
     $("#nav-placeholder").replaceWith(data);
   });
   
-  //setup Vue that displays and tracks the BP state.
-  window.BPVue = createBPVue();
+  //setup Vue that displays and tracks the BOP state.
+  window.BOPVue = createBOPVue();
 
   window.eventLogVue = createEventLogVue();
   
-  //interval to keep BP updated
-  window.fetchBPStateInterval = setInterval(BPVue.fetchBPState, 2000);
-  //keep BP 'now' var up to date
-  window.BPVueTickInterval = setInterval(BPVue.tick, 1000);
+  //interval to keep BOP updated
+  window.fetchBOPStateInterval = setInterval(BOPVue.fetchBOPState, 2000);
+  //keep BOP 'now' var up to date
+  window.BOPVueTickInterval = setInterval(BOPVue.tick, 1000);
   
   //event listener for when the user inputs a new address and hits enter.
-  $("#BPAddressInput").keypress(function(e) {
+  $("#BOPAddressInput").keypress(function(e) {
     if (e.which == 13) {//enter
-      var address = $("#BPAddressInput").val();
-      BPVue.setNewBP(address);
-      verifyAddressIsBP();
+      var address = $("#BOPAddressInput").val();
+      BOPVue.setNewBOP(address);
+      verifyAddressIsBOP();
     }
   });
   
   prepareWeb3();
 });
-//BP contract method calls
+//BOP contract method calls
 
 function web3CallbackLogIfError(err, res) {
   if (err) console.log(err.message);
 }
 
 function callCommit() {
-  BPVue.BP.contractInstance.commit({'value':BPVue.BP.commitThreshold}, web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.commit({'value':BOPVue.BOP.serviceDeposit}, web3CallbackLogIfError);
 }
 
 function callRelease(amountInWei) {
-  BPVue.BP.contractInstance.release(amountInWei, {'gas':300000}, web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.release(amountInWei, {'gas':300000}, web3CallbackLogIfError);
 }
 function releaseFromForm() {
   var amountInEth = $('#release-amount-input').val();
@@ -202,14 +202,14 @@ function releaseFromForm() {
   var amountInWei = web3.toWei(amountInEth,'ether');
   if (amountInWei <= 0)
     alert("Error: the amount must be greater than 0.");
-  else if (BPVue.BP.balance.lessThan(amountInWei))
-    alert("Error: the Payment does not contain that much ether!\nRequested release: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BPVue.BP.balance));
+  else if (BOPVue.BOP.balance.lessThan(amountInWei))
+    alert("Error: the Payment does not contain that much ether!\nRequested release: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
   else
     callRelease(amountInWei);
 }
 
 function callBurn(amountInWei) {
-  BPVue.BP.contractInstance.burn(amountInWei, {'gas':300000}, web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.burn(amountInWei, {'gas':300000}, web3CallbackLogIfError);
 }
 function burnFromForm() {
   var amountInEth = $('#burn-amount-input').val();
@@ -217,14 +217,14 @@ function burnFromForm() {
   var amountInWei = web3.toWei(amountInEth,'ether');
   if (amountInWei <= 0)
     alert("Error: the amount must be greater than 0.");
-  else if (BPVue.BP.balance.lessThan(amountInWei))
-    alert("Error: the Payment does not contain that much ether!\nRequested burn: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BPVue.BP.balance));
+  else if (BOPVue.BOP.balance.lessThan(amountInWei))
+    alert("Error: the Payment does not contain that much ether!\nRequested burn: " + formatWeiValue(amountInWei) + "\nAvailable balance: " + formatWeiValue(BOPVue.BOP.balance));
   else
     callBurn(amountInWei);
 }
 
 function callAddFunds(includedEth) {
-	BPVue.BP.contractInstance.addFunds({'value':web3.toWei(includedEth,'ether')}, web3CallbackLogIfError)
+	BOPVue.BOP.contractInstance.addFunds({'value':web3.toWei(includedEth,'ether')}, web3CallbackLogIfError)
 }
 function addfundsFromForm() {
 	var amount = new web3.BigNumber($('#addfunds-amount-input').val());
@@ -232,19 +232,19 @@ function addfundsFromForm() {
 }
 
 function delayAutorelease() {
-  BPVue.BP.contractInstance.delayAutorelease(web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.delayAutorelease(web3CallbackLogIfError);
 }
 
 function triggerAutorelease() {
-  BPVue.BP.contractInstance.triggerAutorelease(web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.triggerAutorelease(web3CallbackLogIfError);
 }
 
 function callRecoverFunds() {
-  BPVue.BP.contractInstance.recoverFunds(web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.recoverFunds(web3CallbackLogIfError);
 }
 
 function callLogPayerStatement(statement) {
-  BPVue.BP.contractInstance.logPayerStatement(statement, web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.logPayerStatement(statement, web3CallbackLogIfError);
 }
 function logPayerStatementFromForm() {
   var statement = $('#statement-input').val();
@@ -253,7 +253,7 @@ function logPayerStatementFromForm() {
 
 
 function callLogWorkerStatement(statement) {
-  BPVue.BP.contractInstance.logWorkerStatement(statement, web3CallbackLogIfError);
+  BOPVue.BOP.contractInstance.logWorkerStatement(statement, web3CallbackLogIfError);
 }
 function logWorkerStatementFromForm() {
   var statement = $('#statement-input').val();
