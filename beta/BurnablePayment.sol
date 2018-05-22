@@ -32,27 +32,31 @@
 //    If addFunds() is called, the contract returns to the Committed state.
 
 pragma solidity ^ 0.4.2;
+// NOTE: The contract TC uses on etherscan (0xA225EbE73347dd87492868332F9B746bEb8499bb)
+// seems to have been compiled with Solidity 0.4.18, NOT 0.4.2 as stated above.
+// Not sure how that happened, but I'm reluctant to change the Solidity source and recompile/redeploy now,
+// as that would effectively clear the current history of BPs.
 
 contract BurnablePaymentFactory {
-    
+
     //contract address array
     address[]public BPs;
 
     event NewBurnablePayment(
-        address indexed bpAddress, 
-        bool payerOpened, 
-        address creator, 
-        uint deposited, 
-        uint commitThreshold, 
-        uint autoreleaseInterval, 
-        string title, 
+        address indexed bpAddress,
+        bool payerOpened,
+        address creator,
+        uint deposited,
+        uint commitThreshold,
+        uint autoreleaseInterval,
+        string title,
         string initialStatement
-    );  
+    );
 
     function newBP(bool payerOpened, address creator, uint commitThreshold, uint autoreleaseInterval, string title, string initialStatement)
     public
     payable
-    returns (address newBPAddr) 
+    returns (address newBPAddr)
     {
         //pass along any ether to the constructor
         newBPAddr = (new BurnablePayment).value(msg.value)(payerOpened, creator, commitThreshold, autoreleaseInterval, title, initialStatement);
@@ -66,7 +70,7 @@ contract BurnablePaymentFactory {
     function getBPCount()
     public
     constant
-    returns(uint) 
+    returns(uint)
     {
         return BPs.length;
     }
@@ -75,12 +79,12 @@ contract BurnablePaymentFactory {
 contract BurnablePayment {
     //title will never change
     string public title;
-    
+
     //BP will start with a payer or a worker but not both
     address public payer;
     address public worker;
     address constant BURN_ADDRESS = 0x0;
-    
+
     //Set to true if fundsRecovered is called
     bool recovered = false;
 
@@ -138,7 +142,7 @@ contract BurnablePayment {
         } else if (state == State.WorkerOpened) {
             require(msg.sender == worker);
         } else {
-            revert();        
+            revert();
         }
         _;
     }
@@ -158,7 +162,7 @@ contract BurnablePayment {
 
     function BurnablePayment(bool payerIsOpening, address creator, uint _commitThreshold, uint _autoreleaseInterval, string _title, string initialStatement)
     public
-    payable 
+    payable
     {
         Created(this, payerIsOpening, creator, _commitThreshold, autoreleaseInterval, title);
 
@@ -167,7 +171,7 @@ contract BurnablePayment {
             FundsAdded(tx.origin, msg.value);
             amountDeposited += msg.value;
         }
-        
+
         title = _title;
 
         if (payerIsOpening) {
@@ -185,7 +189,7 @@ contract BurnablePayment {
             if (payerIsOpening) {
                 PayerStatement(initialStatement);
             } else {
-                WorkerStatement(initialStatement);              
+                WorkerStatement(initialStatement);
             }
         }
     }
@@ -211,7 +215,7 @@ contract BurnablePayment {
     {
         recovered = true;
         FundsRecovered();
-        
+
         if (state == State.PayerOpened)
             selfdestruct(payer);
         else if (state == State.WorkerOpened)
@@ -221,7 +225,7 @@ contract BurnablePayment {
     function commit()
     public
     inOpenState()
-    payable 
+    payable
     {
         require(msg.value == commitThreshold);
 
@@ -235,14 +239,14 @@ contract BurnablePayment {
         else
             payer = msg.sender;
         state = State.Committed;
-        
+
         Committed(msg.sender);
 
         autoreleaseTime = now + autoreleaseInterval;
     }
 
     function internalBurn(uint amount)
-    private 
+    private
     {
         BURN_ADDRESS.transfer(amount);
 
@@ -258,13 +262,13 @@ contract BurnablePayment {
     function burn(uint amount)
     public
     inState(State.Committed)
-    onlyPayer() 
+    onlyPayer()
     {
         internalBurn(amount);
     }
 
     function internalRelease(uint amount)
-    private 
+    private
     {
         worker.transfer(amount);
 
@@ -280,21 +284,21 @@ contract BurnablePayment {
     function release(uint amount)
     public
     inState(State.Committed)
-    onlyPayer() 
+    onlyPayer()
     {
         internalRelease(amount);
     }
 
     function logPayerStatement(string statement)
     public
-    onlyPayer() 
+    onlyPayer()
     {
         PayerStatement(statement);
     }
 
     function logWorkerStatement(string statement)
     public
-    onlyWorker() 
+    onlyWorker()
     {
         WorkerStatement(statement);
     }
@@ -302,7 +306,7 @@ contract BurnablePayment {
     function delayAutorelease()
     public
     onlyPayer()
-    inState(State.Committed) 
+    inState(State.Committed)
     {
         autoreleaseTime = now + autoreleaseInterval;
         AutoreleaseDelayed();
@@ -311,14 +315,14 @@ contract BurnablePayment {
     function triggerAutorelease()
     public
     onlyWorker()
-    inState(State.Committed) 
+    inState(State.Committed)
     {
         require(now >= autoreleaseTime);
 
         AutoreleaseTriggered();
         internalRelease(this.balance);
     }
-    
+
     function getFullState()
     public
     constant
